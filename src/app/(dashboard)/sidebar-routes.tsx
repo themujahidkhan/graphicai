@@ -1,6 +1,12 @@
 "use client";
 
-import { CreditCard, Crown, Home, MessageCircleQuestion } from "lucide-react";
+import {
+	IconCreditCard,
+	IconCrown,
+	IconHelp,
+	IconLayout,
+	IconTemplate,
+} from "@tabler/icons-react";
 
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -28,29 +34,10 @@ export const SidebarRoutes = () => {
 
 	return (
 		<div className="flex flex-col gap-y-4 flex-1">
-			{shouldBlock && !isLoading && (
-				<>
-					<div className="px-3">
-						<Button
-							onClick={() => mutation.mutate()}
-							disabled={mutation.isPending}
-							className="w-full rounded-xl border-none hover:bg-white hover:opacity-75 transition"
-							variant="outline"
-							size="lg"
-						>
-							<Crown className="mr-2 size-4 fill-yellow-500 text-yellow-500" />
-							Upgrade to Graphic AI Pro
-						</Button>
-					</div>
-					<div className="px-3">
-						<Separator />
-					</div>
-				</>
-			)}
 			<ul className="flex flex-col gap-y-1 px-3">
 				<SidebarItem
 					href="/"
-					icon={Home}
+					icon={IconLayout}
 					label="Home"
 					isActive={pathname === "/"}
 				/>
@@ -61,14 +48,15 @@ export const SidebarRoutes = () => {
 			<ul className="flex flex-col gap-y-1 px-3">
 				<SidebarItem
 					href={pathname}
-					icon={CreditCard}
-					label="Billing"
+					icon={IconTemplate}
+					label="Templates"
 					onClick={onClick}
 				/>
+				<SidebarItem href="/billing" icon={IconCreditCard} label="Billing" />
 				<SidebarItem
 					// TODO: Add Support Email here
 					href="mailto:"
-					icon={MessageCircleQuestion}
+					icon={IconHelp}
 					label="Get Help"
 				/>
 			</ul>

@@ -1,21 +1,27 @@
 "use client";
 
 import { ActiveTool, Editor } from "@/features/editor/types";
-import { BsCloudCheck, BsCloudSlash } from "react-icons/bs";
-import {
-	ChevronDown,
-	Download,
-	Loader,
-	MousePointerClick,
-	Redo2,
-	Undo2,
-} from "lucide-react";
 import {
 	DropdownMenu,
 	DropdownMenuContent,
 	DropdownMenuItem,
 	DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+	IconArrowBackUp,
+	IconArrowForwardUp,
+	IconChevronDown,
+	IconClick,
+	IconCloudCheck,
+	IconCloudOff,
+	IconDownload,
+	IconFileTypeJpg,
+	IconFileTypePng,
+	IconFileTypeSvg,
+	IconFolderOpen,
+	IconJson,
+	IconLoader,
+} from "@tabler/icons-react";
 import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -112,7 +118,7 @@ export const Navbar = ({
 					<DropdownMenuTrigger asChild>
 						<Button size="sm" variant="ghost">
 							File
-							<ChevronDown className="size-4 ml-2" />
+							<IconChevronDown className="size-4 ml-2" stroke={1} />
 						</Button>
 					</DropdownMenuTrigger>
 					<DropdownMenuContent align="start" className="min-w-60">
@@ -120,7 +126,7 @@ export const Navbar = ({
 							onClick={() => openFilePicker()}
 							className="flex items-center gap-x-2"
 						>
-							<CiFileOn className="size-8" />
+							<IconFolderOpen className="size-8" stroke={1} />
 							<div>
 								<p>Open</p>
 								<p className="text-xs text-muted-foreground">
@@ -138,7 +144,7 @@ export const Navbar = ({
 						onClick={() => onChangeActiveTool("select")}
 						className={cn(activeTool === "select" && "bg-gray-100")}
 					>
-						<MousePointerClick className="size-4" />
+						<IconClick size={24} stroke={1} />
 					</Button>
 				</Hint>
 				<Hint label="Undo" side="bottom" sideOffset={10}>
@@ -148,7 +154,7 @@ export const Navbar = ({
 						size="icon"
 						onClick={() => editor?.onUndo()}
 					>
-						<Undo2 className="size-4" />
+						<IconArrowBackUp size={24} stroke={1} />
 					</Button>
 				</Hint>
 				<Hint label="Redo" side="bottom" sideOffset={10}>
@@ -158,25 +164,25 @@ export const Navbar = ({
 						size="icon"
 						onClick={() => editor?.onRedo()}
 					>
-						<Redo2 className="size-4" />
+						<IconArrowForwardUp size={24} stroke={1} />
 					</Button>
 				</Hint>
 				<Separator orientation="vertical" className="mx-2" />
 				{isPending && (
 					<div className="flex items-center gap-x-2">
-						<Loader className="size-4 animate-spin text-muted-foreground" />
+						<IconLoader className="size-4 animate-spin text-muted-foreground" />
 						<div className="text-xs text-muted-foreground">Saving...</div>
 					</div>
 				)}
 				{!isPending && isError && (
 					<div className="flex items-center gap-x-2">
-						<BsCloudSlash className="size-[20px] text-muted-foreground" />
+						<IconCloudOff className="size-[20px] text-muted-foreground" />
 						<div className="text-xs text-muted-foreground">Failed to save</div>
 					</div>
 				)}
 				{!isPending && !isError && (
 					<div className="flex items-center gap-x-2">
-						<BsCloudCheck className="size-[20px] text-muted-foreground" />
+						<IconCloudCheck className="size-[20px] text-muted-foreground" />
 						<div className="text-xs text-muted-foreground">Saved</div>
 					</div>
 				)}
@@ -191,7 +197,7 @@ export const Navbar = ({
 						<DropdownMenuTrigger asChild>
 							<Button size="sm" variant="ghost">
 								Export
-								<Download className="size-4 ml-4" />
+								<IconDownload className="size-4 ml-4" />
 							</Button>
 						</DropdownMenuTrigger>
 						<DropdownMenuContent align="end" className="min-w-60">
@@ -199,7 +205,7 @@ export const Navbar = ({
 								className="flex items-center gap-x-2"
 								onClick={() => editor?.saveJson()}
 							>
-								<CiFileOn className="size-8" />
+								<IconJson className="size-8" stroke={1} />
 								<div>
 									<p>JSON</p>
 									<p className="text-xs text-muted-foreground">
@@ -211,7 +217,7 @@ export const Navbar = ({
 								className="flex items-center gap-x-2"
 								onClick={() => editor?.savePng()}
 							>
-								<CiFileOn className="size-8" />
+								<IconFileTypePng className="size-8" stroke={1} />
 								<div>
 									<p>PNG</p>
 									<p className="text-xs text-muted-foreground">
@@ -223,7 +229,7 @@ export const Navbar = ({
 								className="flex items-center gap-x-2"
 								onClick={() => editor?.saveJpg()}
 							>
-								<CiFileOn className="size-8" />
+								<IconFileTypeJpg className="size-8" stroke={1} />
 								<div>
 									<p>JPG</p>
 									<p className="text-xs text-muted-foreground">
@@ -235,7 +241,7 @@ export const Navbar = ({
 								className="flex items-center gap-x-2"
 								onClick={() => editor?.saveSvg()}
 							>
-								<CiFileOn className="size-8" />
+								<IconFileTypeSvg className="size-8" stroke={1} />
 								<div>
 									<p>SVG</p>
 									<p className="text-xs text-muted-foreground">

@@ -1,13 +1,12 @@
-import { useSubscriptionModal } from "@/features/subscriptions/store/use-subscription-modal";
 import { useGetSubscription } from "@/features/subscriptions/api/use-get-subscription";
+import { useRouter } from "next/navigation";
 
 export const usePaywall = () => {
+  const router = useRouter();
   const { 
     data: subscription,
     isLoading: isLoadingSubscription,
   } = useGetSubscription();
-
-  const subscriptionModal = useSubscriptionModal();
 
   const shouldBlock = isLoadingSubscription || !subscription?.active;
 
@@ -15,7 +14,7 @@ export const usePaywall = () => {
     isLoading: isLoadingSubscription,
     shouldBlock,
     triggerPaywall: () => {
-      subscriptionModal.onOpen();
+      router.push("/billing");
     },
   };
 };

@@ -1,13 +1,11 @@
-import Stripe from "stripe";
 import { Hono } from "hono";
-import { eq } from "drizzle-orm";
-import { verifyAuth } from "@hono/auth-js";
-
+import Stripe from "stripe";
 import { checkIsActive } from "@/features/subscriptions/lib";
-
-import { stripe } from "@/lib/stripe";
 import { db } from "@/db/drizzle";
+import { eq } from "drizzle-orm";
+import { stripe } from "@/lib/stripe";
 import { subscriptions } from "@/db/schema";
+import { verifyAuth } from "@hono/auth-js";
 
 const app = new Hono()
   .post("/billing", verifyAuth(), async (c) => {
