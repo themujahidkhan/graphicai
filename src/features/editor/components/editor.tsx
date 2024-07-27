@@ -26,12 +26,12 @@ import { UploadSidebar } from "@/features/editor/components/upload-sidebar";
 import debounce from "lodash.debounce";
 import { fabric } from "fabric";
 import { useEditor } from "@/features/editor/hooks/use-editor";
+import { useSnapGuidelines } from "@/features/editor/hooks/use-snap-guidelines";
 import { useUpdateProject } from "@/features/projects/api/use-update-project";
 
 interface EditorProps {
 	initialData: ResponseType["data"];
 }
-
 export const Editor = ({ initialData }: EditorProps) => {
 	const { mutate } = useUpdateProject(initialData.id);
 
@@ -65,6 +65,7 @@ export const Editor = ({ initialData }: EditorProps) => {
 		clearSelectionCallback: onClearSelection,
 		saveCallback: debouncedSave,
 	});
+	useSnapGuidelines(editor?.canvas || null);
 
 	const onChangeActiveTool = useCallback(
 		(tool: ActiveTool) => {

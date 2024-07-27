@@ -1,5 +1,6 @@
-import { fabric } from "fabric";
 import { useCallback, useEffect } from "react";
+
+import { fabric } from "fabric";
 
 interface UseAutoResizeProps {
   canvas: fabric.Canvas | null;
