@@ -3,12 +3,14 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 import { client } from "@/lib/hono";
 import { toast } from "sonner";
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 type ResponseType = InferResponseType<typeof client.api.projects["$post"], 200>;
 type RequestType = InferRequestType<typeof client.api.projects["$post"]>["json"];
 
 export const useCreateProject = () => {
   const queryClient = useQueryClient();
+  const { trackEvent } = useAnalytics();
 
   const mutation = useMutation<
     ResponseType,
@@ -30,13 +32,15 @@ export const useCreateProject = () => {
 
       return await response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       toast.success("Project created");
       queryClient.invalidateQueries({ queryKey: ["projects"] });
+      trackEvent("create_project", "Project", data.data.name);
     },
     onError: (error) => {
       console.error("Create project error:", error);
       toast.error(error.message || "Failed to create project");
+      trackEvent("create_project_error", "Project", error.message);
     }
   });
 

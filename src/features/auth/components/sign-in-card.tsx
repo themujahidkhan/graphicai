@@ -9,25 +9,27 @@ import {
 } from "@/components/ui/card";
 
 import { Button } from "@/components/ui/button";
-import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { Separator } from "@/components/ui/separator";
 import { TriangleAlert } from "lucide-react";
 import { signIn } from "next-auth/react";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import { useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export const SignInCard = () => {
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+	const { trackEvent } = useAnalytics();
 
 	const params = useSearchParams();
 	const error = params.get("error");
 
 	const onCredentialSignIn = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		trackEvent("sign_in_attempt", "Authentication", "Credentials");
 
 		signIn("credentials", {
 			email: email,
@@ -37,6 +39,7 @@ export const SignInCard = () => {
 	};
 
 	const onProviderSignIn = (provider: "github" | "google") => {
+		trackEvent("sign_in_attempt", "Authentication", provider);
 		signIn(provider, { callbackUrl: "/" });
 	};
 

@@ -1,5 +1,6 @@
 import "./globals.css";
 
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { Inter } from "next/font/google";
 import type { Metadata } from "next";
 import { Modals } from "@/components/modals";
@@ -34,6 +35,7 @@ export default async function RootLayout({
 						<SubscriptionAlert />
 						{children}
 					</Providers>
+					<GoogleAnalytics gaId="G-B1CTPX0Y9G" />
 				</body>
 			</html>
 		</SessionProvider>

@@ -4,6 +4,7 @@ import { Loader, TriangleAlert } from "lucide-react";
 
 import type { ResponseType } from "@/features/projects/api/use-get-templates";
 import { TemplateCard } from "./template-card";
+import { useAnalytics } from "@/hooks/useAnalytics";
 import { useCreateProject } from "@/features/projects/api/use-create-project";
 import { useGetTemplates } from "@/features/projects/api/use-get-templates";
 import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
@@ -13,6 +14,7 @@ export const TemplatesSection = () => {
 	const { shouldBlock, triggerPaywall } = usePaywall();
 	const router = useRouter();
 	const mutation = useCreateProject();
+	const { trackEvent } = useAnalytics();
 
 	const { data, isLoading, isError } = useGetTemplates({
 		page: "1",
@@ -22,8 +24,10 @@ export const TemplatesSection = () => {
 	const onClick = (template: ResponseType["data"][0]) => {
 		if (template.isPro && shouldBlock) {
 			triggerPaywall();
+			trackEvent("template_blocked", "Template", template.name);
 			return;
 		}
+		trackEvent("use_template", "Template", template.name);
 
 		mutation.mutate(
 			{

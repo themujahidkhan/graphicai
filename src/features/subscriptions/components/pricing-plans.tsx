@@ -1,19 +1,20 @@
-import { useState } from "react";
 import { Check, X } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { useState } from "react";
 
 const plans = [
 	{
 		name: "Free",
 		price: "$0",
 		features: [
-			"Over 1,000 stunning templates",
-			"100+ design types for every need",
-			"Access to 3 million stock photos & graphics",
-			"Generate 10 AI images monthly",
-			"Remove backgrounds from 10 images",
-			"5 GB of secure cloud storage",
+			"1K+ eye-catching templates at your fingertips",
+			"100+ design types to unleash your creativity",
+			"3M+ stunning stock photos and graphics",
+			"10 AI-powered image creations monthly",
+			"10 magic background removals",
+			"5 GB cloud storage for your masterpieces",
 		],
 		cta: "Current Plan",
 		highlighted: false,
@@ -25,11 +26,11 @@ const plans = [
 			annually: "$5",
 		},
 		features: [
-			"Unlimited access to premium templates",
-			"Over 10 million high-quality stock photos",
-			"Unlimited AI image generation",
-			"Unlimited background removal",
-			"100 GB of cloud storage",
+			"Unlimited premium templates to dazzle",
+			"10M+ pro-quality stock photos at your command",
+			"Endless AI image generation possibilities",
+			"Unlimited background removal wizardry",
+			"100GB cloud storage for your growing portfolio",
 		],
 		cta: "Upgrade Now",
 		highlighted: true,
@@ -38,13 +39,13 @@ const plans = [
 		name: "Team",
 		price: "Coming Soon",
 		features: [
-			"Unlimited premium templates for your team",
-			"Access to 100 million stock photos",
-			"Create brand kits with logos & colors",
-			"Invite up to 10 team members for real-time collaboration",
-			"1 TB of cloud storage",
-			"Unlimited AI image generation",
-			"Unlimited background removal",
+			"Unlimited premium templates for your squad",
+			"100M+ stock photos to fuel your creativity",
+			"Brand kits: Your visual identity, always on point",
+			"Collaborate with up to 10 team members in real-time",
+			"1 TB of storage for your team's masterpieces",
+			"Unlimited AI image generation to push boundaries",
+			"Endless background removal for picture-perfect results",
 		],
 		cta: "Join Waitlist",
 		highlighted: false,
