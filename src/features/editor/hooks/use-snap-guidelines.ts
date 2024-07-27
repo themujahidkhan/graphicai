@@ -11,10 +11,10 @@ export const useSnapGuidelines = (canvas: fabric.Canvas | null) => {
   useEffect(() => {
     if (!canvas) return;
 
-    const guidelines: fabric.Line[] = [];
+    let guidelines: fabric.Line[] = [];
 
     const drawVerticalLine = (x: number) => {
-      const line = new fabric.Line([x, - canvas.height / 2, x, canvas.height], {
+      const line = new fabric.Line([x, 0, x, canvas.height || 0], {
         stroke: GUIDELINE_COLOR,
         strokeWidth: 1,
         selectable: false,
@@ -25,7 +25,7 @@ export const useSnapGuidelines = (canvas: fabric.Canvas | null) => {
     };
 
     const drawHorizontalLine = (y: number) => {
-      const line = new fabric.Line([-canvas.width / 2, y, canvas.width, y], {
+      const line = new fabric.Line([0, y, canvas.width || 0, y], {
         stroke: GUIDELINE_COLOR,
         strokeWidth: 1,
         selectable: false,
@@ -37,20 +37,20 @@ export const useSnapGuidelines = (canvas: fabric.Canvas | null) => {
 
     const removeGuidelines = () => {
       guidelines.forEach((line) => canvas.remove(line));
-      guidelines.length = 0;
+      guidelines = [];
     };
 
     const onObjectMoving = (e: fabric.IEvent) => {
       const activeObject = e.target;
       if (!activeObject) return;
 
+      removeGuidelines();
+
       const objectCenter = activeObject.getCenterPoint();
       const objectLeft = activeObject.left || 0;
       const objectTop = activeObject.top || 0;
       const objectRight = objectLeft + (activeObject.width || 0) * (activeObject.scaleX || 1);
       const objectBottom = objectTop + (activeObject.height || 0) * (activeObject.scaleY || 1);
-
-      removeGuidelines();
 
       canvas.getObjects().forEach((obj) => {
         if (obj === activeObject) return;
@@ -95,14 +95,23 @@ export const useSnapGuidelines = (canvas: fabric.Canvas | null) => {
 
     const onObjectModified = () => {
       removeGuidelines();
+      canvas.renderAll();
+    };
+
+    const onMouseUp = () => {
+      removeGuidelines();
+      canvas.renderAll();
     };
 
     canvas.on('object:moving', onObjectMoving);
     canvas.on('object:modified', onObjectModified);
+    canvas.on('mouse:up', onMouseUp);
 
     return () => {
       canvas.off('object:moving', onObjectMoving);
       canvas.off('object:modified', onObjectModified);
+      canvas.off('mouse:up', onMouseUp);
+      removeGuidelines();
     };
   }, [canvas]);
 };
