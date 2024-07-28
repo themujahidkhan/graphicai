@@ -8,27 +8,26 @@ import {
 	IconAlignCenter,
 	IconAlignLeft,
 	IconAlignRight,
-	IconArrowDown,
-	IconArrowUp,
 	IconBold,
-	IconBorderAll,
+	IconBorderNone,
 	IconChevronDown,
+	IconColorFilter,
 	IconCopy,
 	IconItalic,
 	IconPalette,
-	IconRectangle,
+	IconSpacingHorizontal,
+	IconSpacingVertical,
+	IconStackPop,
+	IconStackPush,
 	IconStrikethrough,
-	IconTransparency,
+	IconTexture,
 	IconTrash,
 	IconUnderline,
 } from "@tabler/icons-react";
 
-import { BsBorderWidth } from "react-icons/bs";
 import { Button } from "@/components/ui/button";
 import { FontSizeInput } from "@/features/editor/components/font-size-input";
 import { Hint } from "@/components/hint";
-import { RxTransparencyGrid } from "react-icons/rx";
-import { TbColorFilter } from "react-icons/tb";
 import { cn } from "@/lib/utils";
 import { isTextType } from "@/features/editor/utils";
 import { useState } from "react";
@@ -204,7 +203,7 @@ export const Toolbar = ({
 							variant="ghost"
 							className={cn(activeTool === "stroke-width" && "bg-gray-100")}
 						>
-							<BsBorderWidth className="size-4" />
+							<IconBorderNone size={24} stroke={1} />
 						</Button>
 					</Hint>
 				</div>
@@ -238,7 +237,7 @@ export const Toolbar = ({
 							variant="ghost"
 							className={cn(properties.fontWeight > 500 && "bg-gray-100")}
 						>
-							<IconBold className="size-4" />
+							<IconBold size={24} stroke={1} />
 						</Button>
 					</Hint>
 				</div>
@@ -252,7 +251,7 @@ export const Toolbar = ({
 							variant="ghost"
 							className={cn(properties.fontStyle === "italic" && "bg-gray-100")}
 						>
-							<IconItalic className="size-4" />
+							<IconItalic size={24} stroke={1} />
 						</Button>
 					</Hint>
 				</div>
@@ -266,7 +265,7 @@ export const Toolbar = ({
 							variant="ghost"
 							className={cn(properties.fontUnderline && "bg-gray-100")}
 						>
-							<IconUnderline className="size-4" />
+							<IconUnderline size={24} stroke={1} />
 						</Button>
 					</Hint>
 				</div>
@@ -280,7 +279,7 @@ export const Toolbar = ({
 							variant="ghost"
 							className={cn(properties.fontLinethrough && "bg-gray-100")}
 						>
-							<IconStrikethrough className="size-4" />
+							<IconStrikethrough size={24} stroke={1} />
 						</Button>
 					</Hint>
 				</div>
@@ -294,7 +293,7 @@ export const Toolbar = ({
 							variant="ghost"
 							className={cn(properties.textAlign === "left" && "bg-gray-100")}
 						>
-							<IconAlignLeft className="size-4" />
+							<IconAlignLeft size={24} stroke={1} />
 						</Button>
 					</Hint>
 				</div>
@@ -308,7 +307,7 @@ export const Toolbar = ({
 							variant="ghost"
 							className={cn(properties.textAlign === "center" && "bg-gray-100")}
 						>
-							<IconAlignCenter className="size-4" />
+							<IconAlignCenter size={24} stroke={1} />
 						</Button>
 					</Hint>
 				</div>
@@ -322,7 +321,7 @@ export const Toolbar = ({
 							variant="ghost"
 							className={cn(properties.textAlign === "right" && "bg-gray-100")}
 						>
-							<IconAlignRight className="size-4" />
+							<IconAlignRight size={24} stroke={1} />
 						</Button>
 					</Hint>
 				</div>
@@ -344,7 +343,7 @@ export const Toolbar = ({
 							variant="ghost"
 							className={cn(activeTool === "filter" && "bg-gray-100")}
 						>
-							<TbColorFilter className="size-4" />
+							<IconColorFilter size={24} stroke={1} />
 						</Button>
 					</Hint>
 				</div>
@@ -358,7 +357,7 @@ export const Toolbar = ({
 							variant="ghost"
 							className={cn(activeTool === "remove-bg" && "bg-gray-100")}
 						>
-							<IconRectangle className="size-4" />
+							<IconRectangle size={24} stroke={1} />
 						</Button>
 					</Hint>
 				</div>
@@ -370,7 +369,7 @@ export const Toolbar = ({
 						size="icon"
 						variant="ghost"
 					>
-						<IconArrowUp className="size-4" />
+						<IconStackPop size={24} stroke={1} />
 					</Button>
 				</Hint>
 			</div>
@@ -381,7 +380,7 @@ export const Toolbar = ({
 						size="icon"
 						variant="ghost"
 					>
-						<IconArrowDown className="size-4" />
+						<IconStackPush size={24} stroke={1} />
 					</Button>
 				</Hint>
 			</div>
@@ -393,7 +392,7 @@ export const Toolbar = ({
 						variant="ghost"
 						className={cn(activeTool === "opacity" && "bg-gray-100")}
 					>
-						<RxTransparencyGrid className="size-4" />
+						<IconTexture size={24} stroke={1} />
 					</Button>
 				</Hint>
 			</div>
@@ -407,14 +406,14 @@ export const Toolbar = ({
 						size="icon"
 						variant="ghost"
 					>
-						<IconCopy className="size-4" />
+						<IconCopy size={24} stroke={1} />
 					</Button>
 				</Hint>
 			</div>
 			<div className="flex items-center h-full justify-center">
 				<Hint label="Delete" side="bottom" sideOffset={5}>
 					<Button onClick={() => editor?.delete()} size="icon" variant="ghost">
-						<IconTrash className="size-4" />
+						<IconTrash size={24} stroke={1} />
 					</Button>
 				</Hint>
 			</div>

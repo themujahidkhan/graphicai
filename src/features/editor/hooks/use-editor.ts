@@ -1,4 +1,4 @@
-import {
+import  {
   BuildEditorProps,
   CIRCLE_OPTIONS,
   DIAMOND_OPTIONS,
@@ -70,6 +70,40 @@ const buildEditor = ({
       top,
     };
   };
+	
+
+ const bringToFront = () => {
+  const activeObject = canvas.getActiveObject();
+  if (activeObject) {
+    canvas.bringToFront(activeObject);
+    
+    // Ensure the workspace stays at the back
+    const workspace = getWorkspace();
+    if (workspace) {
+      canvas.sendToBack(workspace);
+    }
+    
+    canvas.renderAll();
+    save();
+  }
+};
+
+const sendToBack = () => {
+  const activeObject = canvas.getActiveObject();
+  if (activeObject) {
+    // Get all objects except the workspace/background
+    const objects = canvas.getObjects().filter(obj => obj.name !== 'clip');
+    
+    // Find the index of the first non-workspace object
+    const lowestIndex = canvas.getObjects().indexOf(objects[0]);
+    
+    // Move the active object to just above the workspace
+    canvas.moveTo(activeObject, lowestIndex);
+    
+    canvas.renderAll();
+    save();
+  }
+};
 
   const savePng = () => {
     const options = generateSaveOptions();
@@ -151,6 +185,8 @@ const buildEditor = ({
     canRedo,
     autoZoom,
     getWorkspace,
+    bringToFront,
+    sendToBack,
     zoomIn: () => {
       let zoomRatio = canvas.getZoom();
       zoomRatio += 0.05;

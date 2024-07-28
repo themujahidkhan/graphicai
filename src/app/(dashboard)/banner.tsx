@@ -2,21 +2,43 @@
 
 import { ArrowRight, Sparkles } from "lucide-react";
 
+import { Autocomplete } from "@/components/ui/autocomplete";
 import { Button } from "@/components/ui/button";
 import { useCreateProject } from "@/features/projects/api/use-create-project";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export const Banner = () => {
 	const router = useRouter();
 	const mutation = useCreateProject();
 
-	const onClick = () => {
+	const handleSelect = (type) => {
+		createProject(type);
+	};
+
+	const createProject = (type) => {
 		mutation.mutate(
 			{
-				name: "Untitled project",
+				name: `Untitled ${type.label}`,
 				json: "",
-				width: 900,
-				height: 1200,
+				width: type.width,
+				height: type.height,
+			},
+			{
+				onSuccess: ({ data }) => {
+					router.push(`/editor/${data.id}`);
+				},
+			},
+		);
+	};
+
+	const createBlankProject = () => {
+		mutation.mutate(
+			{
+				name: "Untitled Blank Project",
+				json: "",
+				width: 1080,
+				height: 1080,
 			},
 			{
 				onSuccess: ({ data }) => {
@@ -27,28 +49,23 @@ export const Banner = () => {
 	};
 
 	return (
-		<div className="text-black aspect-[5/1] min-h-[248px] flex gap-x-6 p-6 items-center rounded-xl bg-gradient-to-r from-[#b1f643] to-[#fbfbfb]">
-			<div className="rounded-full size-28 items-center justify-center bg-white/50 hidden md:flex">
-				<div className="rounded-full size-20 flex items-center justify-center bg-white">
-					<Sparkles className="h-20 text-[#0073ff] fill-[#0073ff]" />
-				</div>
-			</div>
-			<div className="flex flex-col gap-y-2">
-				<h1 className="text-xl md:text-3xl font-semibold">
-					Visualize your ideas with Graphic AI
+		<div className="text-black aspect-[5/1] min-h-[248px] flex flex-col p-6 rounded-xl bg-gradient-to-r from-[#b1f643] to-[#fbfbfb] relative">
+			<div className="absolute top-4 right-4"></div>
+			<div className="flex flex-col gap-y-4 items-center justify-center flex-grow">
+				<h1 className="text-xl md:text-3xl font-semibold text-center">
+					Bring your creative vision to life with AI-powered graphics
 				</h1>
-				<p className="text-xs md:text-sm mb-2">
+				<p className="text-xs md:text-sm text-center">
 					Build your online presence with AI Graphic Design
 				</p>
-				<Button
-					disabled={mutation.isPending}
-					onClick={onClick}
-					variant="secondary"
-					className="w-[160px]"
-				>
-					Start creating
-					<ArrowRight className="size-4 ml-2" />
+				<Button onClick={createBlankProject} variant="secondary">
+					Start Blank
 				</Button>
+				{mutation.isPending && (
+					<p className="text-sm text-muted-foreground">
+						Creating your project...
+					</p>
+				)}
 			</div>
 		</div>
 	);

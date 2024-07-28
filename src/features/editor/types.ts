@@ -281,9 +281,9 @@ export interface Editor {
   getActiveStrokeWidth: () => number;
   getActiveStrokeDashArray: () => number[];
   selectedObjects: fabric.Object[];
-  startLine: 1
-  endLine: 10
   addStar: () => void;
-   addLine: () => void;
+  addLine: () => void;
+  bringToFront: () => void;
+  sendToBack: () => void;
  
 };

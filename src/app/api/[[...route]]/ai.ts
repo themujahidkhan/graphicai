@@ -1,9 +1,9 @@
-import { z } from "zod";
 import { Hono } from "hono";
-import { verifyAuth } from "@hono/auth-js";
-import { zValidator } from "@hono/zod-validator";
-
+import openai from "@/lib/openai"; // Make sure to import openai
 import { replicate } from "@/lib/replicate";
+import { verifyAuth } from "@hono/auth-js";
+import { z } from "zod";
+import { zValidator } from "@hono/zod-validator";
 
 const app = new Hono()
   .post(

@@ -1,10 +1,18 @@
 "use client";
 
 import { ActiveTool, selectionDependentTools } from "@/features/editor/types";
+import { ArrowLeftRight, ArrowUpDown } from "lucide-react";
+import {
+	ContextMenu,
+	ContextMenuContent,
+	ContextMenuItem,
+	ContextMenuTrigger,
+} from "@/components/ui/context-menu";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { AiSidebar } from "@/features/editor/components/ai-sidebar";
 import { DrawSidebar } from "@/features/editor/components/draw-sidebar";
+import { ElementsSidebar } from "@/features/editor/components/elements-sidebar";
 import { FillColorSidebar } from "@/features/editor/components/fill-color-sidebar";
 import { FilterSidebar } from "@/features/editor/components/filter-sidebar";
 import { FontSidebar } from "@/features/editor/components/font-sidebar";
@@ -15,7 +23,6 @@ import { OpacitySidebar } from "@/features/editor/components/opacity-sidebar";
 import { RemoveBgSidebar } from "@/features/editor/components/remove-bg-sidebar";
 import { ResponseType } from "@/features/projects/api/use-get-project";
 import { SettingsSidebar } from "@/features/editor/components/settings-sidebar";
-import { ShapeSidebar } from "@/features/editor/components/shape-sidebar";
 import { Sidebar } from "@/features/editor/components/sidebar";
 import { StrokeColorSidebar } from "@/features/editor/components/stroke-color-sidebar";
 import { StrokeWidthSidebar } from "@/features/editor/components/stroke-width-sidebar";
@@ -28,20 +35,36 @@ import { fabric } from "fabric";
 import { useEditor } from "@/features/editor/hooks/use-editor";
 import { useSnapGuidelines } from "@/features/editor/hooks/use-snap-guidelines";
 import { useUpdateProject } from "@/features/projects/api/use-update-project";
+import { useWindowEvents } from "@/features/editor/hooks/use-window-events";
 
 interface EditorProps {
 	initialData: ResponseType["data"];
 }
+
 export const Editor = ({ initialData }: EditorProps) => {
 	const { mutate } = useUpdateProject(initialData.id);
+	const [projectName, setProjectName] = useState(initialData.name);
+	const [activeTool, setActiveTool] = useState<ActiveTool>("select");
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
+	// Windows Title
+	useEffect(() => {
+		document.title = initialData.name;
+	}, [initialData.name]);
+
+	const onClearSelection = useCallback(() => {
+		if (selectionDependentTools.includes(activeTool)) {
+			setActiveTool("select");
+		}
+	}, [activeTool]);
+
+	// Define debouncedSave before using it
 	const debouncedSave = useCallback(
 		debounce(
 			(values: {
 				json: string;
 				height: number;
 				width: number;
+				name?: string;
 			}) => {
 				mutate(values);
 			},
@@ -50,14 +73,6 @@ export const Editor = ({ initialData }: EditorProps) => {
 		[mutate],
 	);
 
-	const [activeTool, setActiveTool] = useState<ActiveTool>("select");
-
-	const onClearSelection = useCallback(() => {
-		if (selectionDependentTools.includes(activeTool)) {
-			setActiveTool("select");
-		}
-	}, [activeTool]);
-
 	const { init, editor } = useEditor({
 		defaultState: initialData.json,
 		defaultWidth: initialData.width,
@@ -65,6 +80,38 @@ export const Editor = ({ initialData }: EditorProps) => {
 		clearSelectionCallback: onClearSelection,
 		saveCallback: debouncedSave,
 	});
+
+	// Move useWindowEvents here, after editor is initialized
+	const { resetUnsavedChanges } = useWindowEvents(editor);
+
+	const handleProjectNameChange = useCallback((newName: string) => {
+		setProjectName(newName);
+		debouncedSave({ ...initialData, name: newName });
+	}, [debouncedSave, initialData]);
+
+	// Update debouncedSave to use resetUnsavedChanges
+	useEffect(() => {
+		debouncedSave.cancel();
+		debouncedSave.flush();
+		
+		const newDebouncedSave = debounce(
+			(values: {
+				json: string;
+				height: number;
+				width: number;
+				name?: string;
+			}) => {
+				mutate(values);
+				resetUnsavedChanges();
+			},
+			2500,
+		);
+
+		debouncedSave.cancel = newDebouncedSave.cancel;
+		debouncedSave.flush = newDebouncedSave.flush;
+		debouncedSave.pending = newDebouncedSave.pending;
+	}, [mutate, resetUnsavedChanges]);
+
 	useSnapGuidelines(editor?.canvas || null);
 
 	const onChangeActiveTool = useCallback(
@@ -113,13 +160,14 @@ export const Editor = ({ initialData }: EditorProps) => {
 				activeTool={activeTool}
 				onChangeActiveTool={setActiveTool}
 				initialProjectName={initialData.name}
+				onProjectNameChange={handleProjectNameChange}
 			/>
 			<div className="absolute h-[calc(100%-68px)] w-full top-[68px] flex">
 				<Sidebar
 					activeTool={activeTool}
 					onChangeActiveTool={onChangeActiveTool}
 				/>
-				<ShapeSidebar
+				<ElementsSidebar
 					editor={editor}
 					activeTool={activeTool}
 					onChangeActiveTool={onChangeActiveTool}
@@ -205,7 +253,30 @@ export const Editor = ({ initialData }: EditorProps) => {
 						className="flex-1 h-[calc(100%-124px)] bg-muted"
 						ref={containerRef}
 					>
-						<canvas ref={canvasRef} />
+						<ContextMenu>
+							<ContextMenuTrigger>
+								<div
+									className="flex-1 h-[calc(100%-124px)] bg-muted"
+									ref={containerRef}
+								>
+									<canvas ref={canvasRef} />
+								</div>
+							</ContextMenuTrigger>
+							<ContextMenuContent>
+								<ContextMenuItem onSelect={() => editor?.bringForward()}>
+									Bring Forward
+								</ContextMenuItem>
+								<ContextMenuItem onSelect={() => editor?.sendBackwards()}>
+									Send Backward
+								</ContextMenuItem>
+								<ContextMenuItem onSelect={() => editor?.bringToFront()}>
+									Bring to Front
+								</ContextMenuItem>
+								<ContextMenuItem onSelect={() => editor?.sendToBack()}>
+									Send to Back
+								</ContextMenuItem>
+							</ContextMenuContent>
+						</ContextMenu>
 					</div>
 					<Footer editor={editor} />
 				</main>
@@ -213,3 +284,4 @@ export const Editor = ({ initialData }: EditorProps) => {
 		</div>
 	);
 };
+ 

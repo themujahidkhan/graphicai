@@ -1,17 +1,14 @@
-import { useState } from "react";
-
-import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
-
 import { ActiveTool, Editor } from "@/features/editor/types";
+
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Textarea } from "@/components/ui/textarea";
 import { ToolSidebarClose } from "@/features/editor/components/tool-sidebar-close";
 import { ToolSidebarHeader } from "@/features/editor/components/tool-sidebar-header";
-
-import { useGenerateImage } from "@/features/ai/api/use-generate-image";
-
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { useGenerateImage } from "@/features/ai/api/use-generate-image";
+import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
+import { useState } from "react";
 
 interface AiSidebarProps {
   editor: Editor | undefined;

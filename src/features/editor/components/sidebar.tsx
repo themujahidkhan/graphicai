@@ -2,10 +2,10 @@
 
 import {
 	IconLayoutDashboard,
+	IconLayoutGrid,
 	IconPencil,
 	IconPhoto,
 	IconSettings,
-	IconShape,
 	IconTypography,
 	IconUpload,
 	IconWand,
@@ -30,10 +30,10 @@ export const Sidebar = ({ activeTool, onChangeActiveTool }: SidebarProps) => {
 					onClick={() => onChangeActiveTool("templates")}
 				/>
 				<SidebarItem
-					icon={IconShape}
-					label="Shapes"
-					isActive={activeTool === "shapes"}
-					onClick={() => onChangeActiveTool("shapes")}
+					icon={IconLayoutGrid}
+					label="Elements"
+					isActive={activeTool === "elements"}
+					onClick={() => onChangeActiveTool("elements")}
 				/>
 				<SidebarItem
 					icon={IconTypography}
