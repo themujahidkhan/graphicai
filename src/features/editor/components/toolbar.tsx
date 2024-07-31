@@ -15,6 +15,7 @@ import {
 	IconCopy,
 	IconItalic,
 	IconPalette,
+	IconRectangle,
 	IconSpacingHorizontal,
 	IconSpacingVertical,
 	IconStackPop,

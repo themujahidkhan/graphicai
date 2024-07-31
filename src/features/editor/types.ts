@@ -285,5 +285,5 @@ export interface Editor {
   addLine: () => void;
   bringToFront: () => void;
   sendToBack: () => void;
- 
+  removeGuildelines: () => void;
 };
