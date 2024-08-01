@@ -176,7 +176,9 @@ const buildEditor = ({
 		const guidelines = canvas
 			.getObjects()
 			.filter((obj) => obj.name === "guideline");
-		guidelines.forEach((guideline) => canvas.remove(guideline));
+		for (const guideline of guidelines) {
+			canvas.remove(guideline);
+		}
 		canvas.renderAll();
 	};
 
@@ -243,9 +245,10 @@ const buildEditor = ({
 		},
 		onCopy: () => copy(),
 		onPaste: () => paste(),
+
 		changeImageFilter: (value: string) => {
 			const objects = canvas.getActiveObjects();
-			objects.forEach((object) => {
+			for (const object of objects) {
 				if (object.type === "image") {
 					const imageObject = object as fabric.Image;
 
@@ -255,7 +258,7 @@ const buildEditor = ({
 					imageObject.applyFilters();
 					canvas.renderAll();
 				}
-			});
+			}
 		},
 		addImage: (value: string) => {
 			fabric.Image.fromURL(
@@ -274,7 +277,9 @@ const buildEditor = ({
 			);
 		},
 		delete: () => {
-			canvas.getActiveObjects().forEach((object) => canvas.remove(object));
+			for (const object of canvas.getActiveObjects()) {
+				canvas.remove(object);
+			}
 			canvas.discardActiveObject();
 			canvas.renderAll();
 		},
@@ -299,13 +304,13 @@ const buildEditor = ({
 			return value;
 		},
 		changeFontSize: (value: number) => {
-			canvas.getActiveObjects().forEach((object) => {
+			for (const object of canvas.getActiveObjects()) {
 				if (isTextType(object.type)) {
 					// @ts-ignore
 					// Faulty TS library, fontSize exists.
 					object.set({ fontSize: value });
 				}
-			});
+			}
 			canvas.renderAll();
 		},
 		getActiveFontSize: () => {
@@ -322,13 +327,13 @@ const buildEditor = ({
 			return value;
 		},
 		changeTextAlign: (value: string) => {
-			canvas.getActiveObjects().forEach((object) => {
+			for (const object of canvas.getActiveObjects()) {
 				if (isTextType(object.type)) {
 					// @ts-ignore
 					// Faulty TS library, textAlign exists.
 					object.set({ textAlign: value });
 				}
-			});
+			}
 			canvas.renderAll();
 		},
 		getActiveTextAlign: () => {
@@ -345,13 +350,13 @@ const buildEditor = ({
 			return value;
 		},
 		changeFontUnderline: (value: boolean) => {
-			canvas.getActiveObjects().forEach((object) => {
+			for (const object of canvas.getActiveObjects()) {
 				if (isTextType(object.type)) {
 					// @ts-ignore
 					// Faulty TS library, underline exists.
 					object.set({ underline: value });
 				}
-			});
+			}
 			canvas.renderAll();
 		},
 		getActiveFontUnderline: () => {
@@ -368,13 +373,13 @@ const buildEditor = ({
 			return value;
 		},
 		changeFontLinethrough: (value: boolean) => {
-			canvas.getActiveObjects().forEach((object) => {
+			for (const object of canvas.getActiveObjects()) {
 				if (isTextType(object.type)) {
 					// @ts-ignore
 					// Faulty TS library, linethrough exists.
 					object.set({ linethrough: value });
 				}
-			});
+			}
 			canvas.renderAll();
 		},
 		getActiveFontLinethrough: () => {
@@ -391,13 +396,13 @@ const buildEditor = ({
 			return value;
 		},
 		changeFontStyle: (value: string) => {
-			canvas.getActiveObjects().forEach((object) => {
+			for (const object of canvas.getActiveObjects()) {
 				if (isTextType(object.type)) {
 					// @ts-ignore
 					// Faulty TS library, fontStyle exists.
 					object.set({ fontStyle: value });
 				}
-			});
+			}
 			canvas.renderAll();
 		},
 		getActiveFontStyle: () => {
@@ -414,25 +419,25 @@ const buildEditor = ({
 			return value;
 		},
 		changeFontWeight: (value: number) => {
-			canvas.getActiveObjects().forEach((object) => {
+			for (const object of canvas.getActiveObjects()) {
 				if (isTextType(object.type)) {
 					// @ts-ignore
 					// Faulty TS library, fontWeight exists.
 					object.set({ fontWeight: value });
 				}
-			});
+			}
 			canvas.renderAll();
 		},
 		changeOpacity: (value: number) => {
-			canvas.getActiveObjects().forEach((object) => {
+			for (const object of canvas.getActiveObjects()) {
 				object.set({ opacity: value });
-			});
+			}
 			canvas.renderAll();
 		},
 		bringForward: () => {
-			canvas.getActiveObjects().forEach((object) => {
+			for (const object of canvas.getActiveObjects()) {
 				canvas.bringForward(object);
-			});
+			}
 
 			canvas.renderAll();
 
@@ -440,9 +445,9 @@ const buildEditor = ({
 			workspace?.sendToBack();
 		},
 		sendBackwards: () => {
-			canvas.getActiveObjects().forEach((object) => {
+			for (const object of canvas.getActiveObjects()) {
 				canvas.sendBackwards(object);
-			});
+			}
 
 			canvas.renderAll();
 			const workspace = getWorkspace();
@@ -450,25 +455,25 @@ const buildEditor = ({
 		},
 		changeFontFamily: (value: string) => {
 			setFontFamily(value);
-			canvas.getActiveObjects().forEach((object) => {
+			for (const object of canvas.getActiveObjects()) {
 				if (isTextType(object.type)) {
 					// @ts-ignore
 					// Faulty TS library, fontFamily exists.
 					object.set({ fontFamily: value });
 				}
-			});
+			}
 			canvas.renderAll();
 		},
 		changeFillColor: (value: string) => {
 			setFillColor(value);
-			canvas.getActiveObjects().forEach((object) => {
+			for (const object of canvas.getActiveObjects()) {
 				object.set({ fill: value });
-			});
+			}
 			canvas.renderAll();
 		},
 		changeStrokeColor: (value: string) => {
 			setStrokeColor(value);
-			canvas.getActiveObjects().forEach((object) => {
+			for (const object of canvas.getActiveObjects()) {
 				// Text types don't have stroke
 				if (isTextType(object.type)) {
 					object.set({ fill: value });
@@ -476,23 +481,23 @@ const buildEditor = ({
 				}
 
 				object.set({ stroke: value });
-			});
+			}
 			canvas.freeDrawingBrush.color = value;
 			canvas.renderAll();
 		},
 		changeStrokeWidth: (value: number) => {
 			setStrokeWidth(value);
-			canvas.getActiveObjects().forEach((object) => {
+			for (const object of canvas.getActiveObjects()) {
 				object.set({ strokeWidth: value });
-			});
+			}
 			canvas.freeDrawingBrush.width = value;
 			canvas.renderAll();
 		},
 		changeStrokeDashArray: (value: number[]) => {
 			setStrokeDashArray(value);
-			canvas.getActiveObjects().forEach((object) => {
+			for (const object of canvas.getActiveObjects()) {
 				object.set({ strokeDashArray: value });
-			});
+			}
 			canvas.renderAll();
 		},
 		addCircle: () => {

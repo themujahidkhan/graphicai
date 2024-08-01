@@ -1,36 +1,35 @@
 "use client";
 
-import React from "react";
-import { useRouter } from "next/navigation";
-import { formatDistanceToNow } from "date-fns";
-import { 
-  AlertTriangle, 
-  CopyIcon, 
-  FileIcon, 
-  Loader, 
-  MoreHorizontal, 
+import {
+  AlertTriangle,
+  CopyIcon,
+  FileIcon,
+  Loader,
+  MoreHorizontal,
   Search,
   Trash
 } from "lucide-react";
-
-import { useGetProjects } from "@/features/projects/api/use-get-projects";
-import { useDeleteProject } from "@/features/projects/api/use-delete-project";
-import { useDuplicateProject } from "@/features/projects/api/use-duplicate-project";
-
 import {
-  DropdownMenuContent,
   DropdownMenu,
+  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { 
+import {
   Table,
-  TableRow,
   TableBody,
   TableCell,
+  TableRow,
 } from "@/components/ui/table";
+
 import { Button } from "@/components/ui/button";
+import React from "react";
+import { formatDistanceToNow } from "date-fns";
 import { useConfirm } from "@/hooks/use-confirm";
+import { useDeleteProject } from "@/features/projects/api/use-delete-project";
+import { useDuplicateProject } from "@/features/projects/api/use-duplicate-project";
+import { useGetProjects } from "@/features/projects/api/use-get-projects";
+import { useRouter } from "next/navigation";
 
 export const ProjectsSection = () => {
   const [ConfirmDialog, confirm] = useConfirm(
@@ -110,7 +109,7 @@ export const ProjectsSection = () => {
   }
 
   return (
-    <div className="space-y-4"> 
+    <div className="space-y-4">
       <ConfirmDialog />
       <h3 className="font-semibold text-lg">
         Recent projects

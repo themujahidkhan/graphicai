@@ -33,7 +33,6 @@ import { UploadSidebar } from "@/features/editor/components/upload-sidebar";
 import debounce from "lodash.debounce";
 import { fabric } from "fabric";
 import { useEditor } from "@/features/editor/hooks/use-editor";
-import { useSnapGuidelines } from "@/features/editor/hooks/use-snap-guidelines";
 import { useUpdateProject } from "@/features/projects/api/use-update-project";
 import { useWindowEvents } from "@/features/editor/hooks/use-window-events";
 
@@ -93,7 +92,7 @@ export const Editor = ({ initialData }: EditorProps) => {
 	useEffect(() => {
 		debouncedSave.cancel();
 		debouncedSave.flush();
-		
+
 		const newDebouncedSave = debounce(
 			(values: {
 				json: string;
@@ -112,7 +111,6 @@ export const Editor = ({ initialData }: EditorProps) => {
 		debouncedSave.pending = newDebouncedSave.pending;
 	}, [mutate, resetUnsavedChanges]);
 
-	useSnapGuidelines(editor?.canvas || null);
 
 	const onChangeActiveTool = useCallback(
 		(tool: ActiveTool) => {
@@ -284,4 +282,3 @@ export const Editor = ({ initialData }: EditorProps) => {
 		</div>
 	);
 };
- 

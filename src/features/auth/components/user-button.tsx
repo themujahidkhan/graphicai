@@ -18,11 +18,13 @@ import { signOut, useSession } from "next-auth/react";
 
 import { useBilling } from "@/features/subscriptions/api/use-billing";
 import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
+import { useRouter } from "next/navigation";
 
 export const UserButton = () => {
 	const { shouldBlock, triggerPaywall, isLoading } = usePaywall();
 	const mutation = useBilling();
 	const session = useSession();
+	const router = useRouter();
 
 	const onClick = () => {
 		if (shouldBlock) {
