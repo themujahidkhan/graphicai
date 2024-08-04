@@ -1,4 +1,10 @@
-import { BsChatSquare, BsDash, BsPentagon, BsStar, BsTriangle } from "react-icons/bs";
+import {
+	BsChatSquare,
+	BsDash,
+	BsPentagon,
+	BsStar,
+	BsTriangle,
+} from "react-icons/bs";
 import { FaCircle, FaRegSquare, FaSquare, FaStar } from "react-icons/fa";
 import { TbPolygon, TbRectangle } from "react-icons/tb";
 
@@ -67,7 +73,7 @@ export const ShapesCategory = ({
 	const [showAll, setShowAll] = useState(false);
 
 	const filteredShapes = shapes.filter((shape) =>
-		shape.id.toLowerCase().includes(searchQuery.toLowerCase())
+		shape.id.toLowerCase().includes(searchQuery.toLowerCase()),
 	);
 
 	const displayedShapes = showAll ? filteredShapes : filteredShapes.slice(0, 8);
