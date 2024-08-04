@@ -42,6 +42,7 @@ interface NavbarProps {
 	activeTool: ActiveTool;
 	onChangeActiveTool: (tool: ActiveTool) => void;
 	initialProjectName: string;
+	onProjectNameChange: (newName: string) => void;
 }
 
 export const Navbar = ({

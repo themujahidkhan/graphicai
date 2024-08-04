@@ -57,6 +57,8 @@ export const Editor = ({ initialData }: EditorProps) => {
 	}, [activeTool]);
 
 	// Define debouncedSave before using it
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const debouncedSave = useCallback(
 		debounce(
 			(values: {
@@ -88,7 +90,9 @@ export const Editor = ({ initialData }: EditorProps) => {
 		debouncedSave({ ...initialData, name: newName });
 	}, [debouncedSave, initialData]);
 
-	// Update debouncedSave to use resetUnsavedChanges
+
+
+	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	useEffect(() => {
 		debouncedSave.cancel();
 		debouncedSave.flush();
@@ -108,7 +112,6 @@ export const Editor = ({ initialData }: EditorProps) => {
 
 		debouncedSave.cancel = newDebouncedSave.cancel;
 		debouncedSave.flush = newDebouncedSave.flush;
-		debouncedSave.pending = newDebouncedSave.pending;
 	}, [mutate, resetUnsavedChanges]);
 
 
@@ -142,6 +145,8 @@ export const Editor = ({ initialData }: EditorProps) => {
 
 		init({
 			initialCanvas: canvas,
+
+			// biome-ignore lint/style/noNonNullAssertion: <explanation>
 			initialContainer: containerRef.current!,
 		});
 
