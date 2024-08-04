@@ -109,6 +109,7 @@ export type ActiveTool =
 	| "ai"
 	| "remove-bg"
 	| "templates"
+	| "elements"
 	| "upload";
 
 export const FILL_COLOR = "rgba(0,0,0,1)";
