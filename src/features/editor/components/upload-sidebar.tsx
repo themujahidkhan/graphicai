@@ -97,7 +97,7 @@ export const UploadSidebar = ({
 					onClientUploadComplete={(res) => {
 						if (res && res[0]) {
 							editor?.addImage(res[0].url);
-							queryClient.invalidateQueries(["userUploads", session?.user?.id]);
+							queryClient.invalidateQueries({ queryKey: ["userUploads", session?.user?.id] });
 						}
 					}}
 				/>
