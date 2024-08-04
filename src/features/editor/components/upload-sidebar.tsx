@@ -108,11 +108,19 @@ export const UploadSidebar = ({
 						{isLoading ? (
 							<div>Loading...</div>
 						) : (
+							// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 							uploadedImages?.map((image: any) => (
 								<div key={image.id} className="relative group">
 									<div
 										className="cursor-pointer relative"
 										onClick={() => handleAddToCanvas(image.url, image.id)}
+										onKeyDown={(e) => {
+											if (e.key === 'Enter' || e.key === ' ') {
+												handleAddToCanvas(image.url, image.id);
+											}
+										}}
+										role="button"
+										tabIndex={0}
 									>
 										<Image
 											src={image.url}
