@@ -32,14 +32,14 @@ app.use(
 	}),
 );
 
+app.use("*", initAuthConfig(getAuthConfig));
+
 const routes = app
 	.route("/ai", ai)
 	.route("/users", users)
 	.route("/images", images)
 	.route("/projects", projects)
 	.route("/subscriptions", subscriptions);
-
-app.use("*", initAuthConfig(getAuthConfig));
 
 export const GET = handle(app);
 export const POST = handle(app);
