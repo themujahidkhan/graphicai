@@ -276,11 +276,13 @@ const buildEditor = ({
 			);
 		},
 		delete: () => {
-			for (const object of canvas.getActiveObjects()) {
-				canvas.remove(object);
+			if (canvas) {
+				const activeObjects = canvas.getActiveObjects();
+				canvas.remove(...activeObjects);
+				canvas.discardActiveObject();
+				canvas.renderAll();
+				save();
 			}
-			canvas.discardActiveObject();
-			canvas.renderAll();
 		},
 		addText: (value, options) => {
 			const object = new fabric.Textbox(value, {
@@ -702,7 +704,7 @@ const buildEditor = ({
 			return value;
 		},
 		selectedObjects,
-		removeGuidelines,
+
 		addSquare: () => {
 			const object = new fabric.Rect({
 				...RECTANGLE_OPTIONS,
@@ -782,7 +784,7 @@ export const useEditor = ({
 	const [strokeDashArray, setStrokeDashArray] =
 		useState<number[]>(STROKE_DASH_ARRAY);
 
-	useWindowEvents();
+	useWindowEvents([canvas]);
 
 	const { save, canRedo, canUndo, undo, redo, canvasHistory, setHistoryIndex } =
 		useHistory({
@@ -811,6 +813,15 @@ export const useEditor = ({
 		paste,
 		save,
 		canvas,
+		delete: () => {
+			if (canvas) {
+				const activeObjects = canvas.getActiveObjects();
+				canvas.remove(...activeObjects);
+				canvas.discardActiveObject();
+				canvas.renderAll();
+				save();
+			}
+		},
 	});
 
 	useLoadState({

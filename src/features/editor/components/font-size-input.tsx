@@ -1,7 +1,7 @@
 import { Minus, Plus } from "lucide-react";
 
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 interface FontSizeInputProps {
   value: number;
@@ -18,7 +18,7 @@ export const FontSizeInput = ({
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
-    const value = parseInt(e.target.value, 10);
+    const value = Number.parseInt(e.target.value, 10);
     onChange(value);
   };
 

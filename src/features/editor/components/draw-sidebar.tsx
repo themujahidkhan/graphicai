@@ -1,17 +1,17 @@
-import { 
-  ActiveTool, 
-  Editor, 
-  STROKE_COLOR, 
+import {
+  ActiveTool,
+  Editor,
+  STROKE_COLOR,
   STROKE_WIDTH
 } from "@/features/editor/types";
+
+import { ColorPicker } from "@/features/editor/components/color-picker";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Slider } from "@/components/ui/slider";
 import { ToolSidebarClose } from "@/features/editor/components/tool-sidebar-close";
 import { ToolSidebarHeader } from "@/features/editor/components/tool-sidebar-header";
-import { ColorPicker } from "@/features/editor/components/color-picker";
-
 import { cn } from "@/lib/utils";
-import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface DrawSidebarProps {
   editor: Editor | undefined;

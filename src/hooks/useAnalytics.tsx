@@ -17,7 +17,8 @@ declare global {
 
 export const useAnalytics = () => {
 	useEffect(() => {
-		const handleRouteChange = (url: string) => {
+		const handleRouteChange = (event: Event) => {
+			const url = (event as CustomEvent<string>).detail;
 			if (typeof window !== "undefined" && window.gtag) {
 				window.gtag("config", "YOUR_GA_MEASUREMENT_ID", {
 					page_path: url,
@@ -27,14 +28,14 @@ export const useAnalytics = () => {
 
 		// Listen for route changes
 		if (typeof window !== "undefined") {
-			window.addEventListener("routeChangeComplete", handleRouteChange as any);
+			window.addEventListener("routeChangeComplete", handleRouteChange);
 		}
 
 		return () => {
 			if (typeof window !== "undefined") {
 				window.removeEventListener(
 					"routeChangeComplete",
-					handleRouteChange as any,
+					handleRouteChange,
 				);
 			}
 		};

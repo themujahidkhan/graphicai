@@ -50,7 +50,7 @@ export const UploadSidebar = ({
 			return response.json();
 		},
 		onSuccess: () => {
-			queryClient.invalidateQueries(["userUploads", session?.user?.id]);
+			queryClient.invalidateQueries({ queryKey: ["userUploads", session?.user?.id] });
 		},
 	});
 
@@ -95,10 +95,8 @@ export const UploadSidebar = ({
 					}}
 					endpoint="imageUploader"
 					onClientUploadComplete={(res) => {
-						if (res && res[0]) {
-							editor?.addImage(res[0].url);
-							queryClient.invalidateQueries({ queryKey: ["userUploads", session?.user?.id] });
-						}
+						editor?.addImage(res?.[0]?.url);
+						queryClient.invalidateQueries({ queryKey: ["userUploads", session?.user?.id] });
 					}}
 				/>
 			</div>

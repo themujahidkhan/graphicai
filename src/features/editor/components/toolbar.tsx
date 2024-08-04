@@ -130,7 +130,7 @@ export const Toolbar = ({
 			return;
 		}
 
-		const newValue = properties.fontLinethrough ? false : true;
+		const newValue = !properties.fontLinethrough;
 
 		editor?.changeFontLinethrough(newValue);
 		setProperties((current) => ({
@@ -144,7 +144,8 @@ export const Toolbar = ({
 			return;
 		}
 
-		const newValue = properties.fontUnderline ? false : true;
+		const newValue = !properties.fontUnderline;
+
 
 		editor?.changeFontUnderline(newValue);
 		setProperties((current) => ({

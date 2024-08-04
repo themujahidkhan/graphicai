@@ -1,17 +1,17 @@
-import { 
-  ActiveTool, 
-  Editor, 
-  STROKE_DASH_ARRAY, 
+import {
+  ActiveTool,
+  Editor,
+  STROKE_DASH_ARRAY,
   STROKE_WIDTH
 } from "@/features/editor/types";
+
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Slider } from "@/components/ui/slider";
 import { ToolSidebarClose } from "@/features/editor/components/tool-sidebar-close";
 import { ToolSidebarHeader } from "@/features/editor/components/tool-sidebar-header";
-
 import { cn } from "@/lib/utils";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
-import { Slider } from "@/components/ui/slider";
-import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface StrokeWidthSidebarProps {
   editor: Editor | undefined;
@@ -70,7 +70,7 @@ export const StrokeWidthSidebar = ({
             size="lg"
             className={cn(
               "w-full h-16 justify-start text-left",
-              JSON.stringify(typeValue) === `[]` && "border-2 border-blue-500"
+              JSON.stringify(typeValue) === "[]" && "border-2 border-blue-500"
             )}
             style={{
               padding: "8px 16px"
@@ -84,7 +84,7 @@ export const StrokeWidthSidebar = ({
             size="lg"
             className={cn(
               "w-full h-16 justify-start text-left",
-              JSON.stringify(typeValue) === `[5,5]` && "border-2 border-blue-500"
+              JSON.stringify(typeValue) === "[]" && "border-2 border-blue-500"
             )}
             style={{
               padding: "8px 16px"

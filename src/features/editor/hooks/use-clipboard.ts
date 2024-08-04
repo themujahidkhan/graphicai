@@ -1,48 +1,59 @@
-import { fabric } from "fabric";
 import { useCallback, useRef } from "react";
 
+import { fabric } from "fabric";
+
 interface UseClipboardProps {
-  canvas: fabric.Canvas | null;
-};
+	canvas: fabric.Canvas | null;
+}
 
-export const useClipboard = ({
-  canvas
-}: UseClipboardProps) => {
-  const clipboard = useRef<any>(null);
+export const useClipboard = ({ canvas }: UseClipboardProps) => {
+	const clipboard = useRef<fabric.Object | null>(null);
 
-  const copy = useCallback(() => {
-    canvas?.getActiveObject()?.clone((cloned: any) => {
-      clipboard.current = cloned;
-    });
-  }, [canvas]);
-  
-  const paste = useCallback(() => {
-    if (!clipboard.current) return;
+	const copy = useCallback(() => {
+		canvas?.getActiveObject()?.clone((cloned: fabric.Object) => {
+			clipboard.current = cloned;
+		});
+	}, [canvas]);
 
-    clipboard.current.clone((clonedObj: any) => {
-      canvas?.discardActiveObject();
-      clonedObj.set({
-        left: clonedObj.left + 10,
-        top: clonedObj.top + 10,
-        evented: true,
-      });
+	const paste = useCallback(() => {
+		if (!clipboard.current) return;
 
-      if (clonedObj.type === "activeSelection") {
-        clonedObj.canvas = canvas;
-        clonedObj.forEachObject((obj: any) => {
-          canvas?.add(obj);
-        });
-        clonedObj.setCoords();
-      } else {
-        canvas?.add(clonedObj);
-      }
+		clipboard.current.clone((clonedObj: fabric.Object) => {
+			canvas?.discardActiveObject();
+			if (clonedObj.left !== undefined && clonedObj.top !== undefined) {
+				clonedObj.set({
+					left: clonedObj.left + 10,
+					top: clonedObj.top + 10,
+					evented: true,
+				});
+			}
 
-      clipboard.current.top += 10;
-      clipboard.current.left += 10;
-      canvas?.setActiveObject(clonedObj);
-      canvas?.requestRenderAll();
-    });
-  }, [canvas]);
+			if (clonedObj.type === "activeSelection") {
+				if (canvas) {
+					clonedObj.canvas = canvas;
+					(clonedObj as fabric.ActiveSelection).forEachObject(
+						(obj: fabric.Object) => {
+							canvas.add(obj);
+						},
+					);
+					clonedObj.setCoords();
+				}
+			} else {
+				canvas?.add(clonedObj);
+			}
 
-  return { copy, paste };
+			if (
+				clipboard.current &&
+				clipboard.current.top !== undefined &&
+				clipboard.current.left !== undefined
+			) {
+				clipboard.current.top += 10;
+				clipboard.current.left += 10;
+			}
+			canvas?.setActiveObject(clonedObj);
+			canvas?.requestRenderAll();
+		});
+	}, [canvas]);
+
+	return { copy, paste };
 };

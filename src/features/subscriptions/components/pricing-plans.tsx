@@ -3,6 +3,7 @@ import { Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 const plans = [
 	{
@@ -82,21 +83,20 @@ export const PricingPlans = () => {
 				{plans.map((plan) => (
 					<div
 						key={plan.name}
-						className={`rounded-lg p-8 ${
-							plan.highlighted
-								? "bg-primary text-white shadow-lg transform scale-105"
-								: "bg-white border"
-						}`}
+						className={`rounded-lg p-8 ${plan.highlighted
+							? "bg-primary text-white shadow-lg transform scale-105"
+							: "bg-white border"
+							}`}
 					>
 						<h3 className="text-2xl font-bold mb-4">{plan.name}</h3>
 						<div className="text-3xl font-bold mb-6">
 							{typeof plan.price === "object"
-								? (isAnnual ? plan.price.annually : plan.price.monthly) + "/mo"
+								? `${isAnnual ? plan.price.annually : plan.price.monthly}/mo`
 								: plan.price}
 						</div>
 						<ul className="mb-8">
 							{plan.features.map((feature, index) => (
-								<li key={index} className="flex items-center mb-3">
+								<li key={uuidv4()} className="flex items-center mb-3">
 									<Check className="mr-2 h-5 w-5 text-green-500" />
 									<span>{feature}</span>
 								</li>

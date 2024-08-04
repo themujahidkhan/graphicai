@@ -1,13 +1,13 @@
-import { 
-  ActiveTool, 
-  Editor, 
+import {
+  ActiveTool,
+  Editor,
 } from "@/features/editor/types";
+
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { ToolSidebarClose } from "@/features/editor/components/tool-sidebar-close";
 import { ToolSidebarHeader } from "@/features/editor/components/tool-sidebar-header";
-
 import { cn } from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
 
 interface TextSidebarProps {
   editor: Editor | undefined;
