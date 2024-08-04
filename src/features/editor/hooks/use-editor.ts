@@ -59,7 +59,6 @@ const buildEditor = ({
 }: BuildEditorProps): Editor => {
 	const generateSaveOptions = () => {
 		const { width, height, left, top } = getWorkspace() as fabric.Rect;
-
 		return {
 			name: "Image",
 			format: "png",
@@ -527,6 +526,8 @@ const buildEditor = ({
 		addRectangle: () => {
 			const object = new fabric.Rect({
 				...RECTANGLE_OPTIONS,
+				width: RECTANGLE_OPTIONS.width,
+				height: RECTANGLE_OPTIONS.height,
 				fill: fillColor,
 				stroke: strokeColor,
 				strokeWidth: strokeWidth,
@@ -590,15 +591,31 @@ const buildEditor = ({
 			addToCanvas(diamond);
 		},
 		addStar: () => {
-			const starPath =
-				"M 0 -50 L 14.64 -25 L 47.55 -15.45 L 23.77 5.45 L 29.39 38.04 L 0 22.5 L -29.39 38.04 L -23.77 5.45 L -47.55 -15.45 Z";
-			const star = new fabric.Path(starPath, {
+			const numPoints = 5;
+			const outerRadius = 50;
+			const innerRadius = 25;
+			const center = { x: 0, y: 0 };
+			const points = [];
+
+			for (let i = 0; i < numPoints * 2; i++) {
+				const radius = i % 2 === 0 ? outerRadius : innerRadius;
+				const angle = (i * Math.PI) / numPoints;
+				points.push({
+					x: center.x + radius * Math.sin(angle),
+					y: center.y - radius * Math.cos(angle),
+				});
+			}
+
+			const star = new fabric.Polygon(points, {
 				...STAR_OPTIONS,
 				fill: fillColor,
 				stroke: strokeColor,
 				strokeWidth: strokeWidth,
 				strokeDashArray: strokeDashArray,
+				left: 100,
+				top: 100,
 			});
+
 			addToCanvas(star);
 		},
 
@@ -686,6 +703,60 @@ const buildEditor = ({
 		},
 		selectedObjects,
 		removeGuidelines,
+		addSquare: () => {
+			const object = new fabric.Rect({
+				...RECTANGLE_OPTIONS,
+				width: RECTANGLE_OPTIONS.height,
+				fill: fillColor,
+				stroke: strokeColor,
+				strokeWidth: strokeWidth,
+				strokeDashArray: strokeDashArray,
+			});
+			addToCanvas(object);
+		},
+		addPolygon: () => {
+			const object = new fabric.Polygon(
+				[
+					{ x: 0, y: 0 },
+					{ x: 50, y: 0 },
+					{ x: 75, y: 50 },
+					{ x: 50, y: 100 },
+					{ x: 0, y: 100 },
+					{ x: -25, y: 50 },
+				],
+				{
+					left: 100,
+					top: 100,
+					fill: fillColor,
+					stroke: strokeColor,
+					strokeWidth: strokeWidth,
+					strokeDashArray: strokeDashArray,
+				},
+			);
+			addToCanvas(object);
+		},
+		addCallout: () => {
+			const path = "M 0 0 L 100 0 L 100 75 L 75 75 L 75 100 L 50 75 L 0 75 Z";
+			const object = new fabric.Path(path, {
+				left: 100,
+				top: 100,
+				fill: fillColor,
+				stroke: strokeColor,
+				strokeWidth: strokeWidth,
+				strokeDashArray: strokeDashArray,
+			});
+			addToCanvas(object);
+		},
+		addBox: () => {
+			const object = new fabric.Rect({
+				...RECTANGLE_OPTIONS,
+				fill: "transparent",
+				stroke: strokeColor,
+				strokeWidth: strokeWidth,
+				strokeDashArray: strokeDashArray,
+			});
+			addToCanvas(object);
+		},
 	};
 };
 

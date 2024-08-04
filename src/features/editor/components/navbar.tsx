@@ -112,7 +112,9 @@ export const Navbar = ({
 
 	return (
 		<nav className="w-full flex items-center p-4 h-[68px] gap-x-8 border-b lg:pl-[34px]">
-			<Logo />
+			<div className="h-[68px] flex items-center px-4 min-w-fit">
+				<Logo />
+			</div>
 			<div className="w-full flex items-center gap-x-1 h-full">
 				<DropdownMenu modal={false}>
 					<DropdownMenuTrigger asChild>

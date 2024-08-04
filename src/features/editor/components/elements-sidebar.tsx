@@ -26,14 +26,14 @@ export const ElementsSidebar = ({
 		onChangeActiveTool("select");
 	};
 
-	const categories = [
-		"Images",
-		"Graphics",
-		"Stickers",
-		"Frames",
-		"Grids",
-		"Mockups",
-	];
+	// const categories = [
+	// 	"Images",
+	// 	"Graphics",
+	// 	"Stickers",
+	// 	"Frames",
+	// 	"Grids",
+	// 	"Mockups",
+	// ];
 
 	return (
 		<aside
@@ -56,14 +56,14 @@ export const ElementsSidebar = ({
 			<ScrollArea>
 				<div className="p-4 space-y-6">
 					<ShapesCategory editor={editor} searchQuery={searchQuery} />
-					{categories.map((category) => (
+					{/* {categories.map((category) => (
 						<ElementCategory
 							key={category}
 							title={category}
 							editor={editor}
 							searchQuery={searchQuery}
 						/>
-					))}
+					))} */}
 				</div>
 			</ScrollArea>
 			<ToolSidebarClose onClick={onClose} />

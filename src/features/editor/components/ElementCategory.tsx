@@ -16,23 +16,13 @@ export const ElementCategory = ({
 }: ElementCategoryProps) => {
 	const [showAll, setShowAll] = useState(false);
 
-	// This is a placeholder. In a real implementation, you'd fetch this data from your database.
+	// @ts-ignore
 	const elements = [
-		{
-			id: 1,
-			name: "Element 1",
-			imageUrl: "/path/to/image1.png",
-			isPremium: false,
-		},
-		{
-			id: 2,
-			name: "Element 2",
-			imageUrl: "/path/to/image2.png",
-			isPremium: true,
-		},
-		// ... more elements
+
+		// TODO: Add elements
 	];
 
+	// @ts-ignore
 	const filteredElements = elements.filter((element) =>
 		element.name.toLowerCase().includes(searchQuery.toLowerCase()),
 	);

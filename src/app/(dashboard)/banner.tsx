@@ -1,21 +1,19 @@
 "use client";
 
-import { ArrowRight, Sparkles } from "lucide-react";
-
-import { Autocomplete } from "@/components/ui/autocomplete";
 import { Button } from "@/components/ui/button";
 import { useCreateProject } from "@/features/projects/api/use-create-project";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 
 export const Banner = () => {
 	const router = useRouter();
 	const mutation = useCreateProject();
 
+	// @ts-ignore
 	const handleSelect = (type) => {
 		createProject(type);
 	};
 
+	// @ts-ignore
 	const createProject = (type) => {
 		mutation.mutate(
 			{
@@ -35,7 +33,7 @@ export const Banner = () => {
 	const createBlankProject = () => {
 		mutation.mutate(
 			{
-				name: "Untitled Blank Project",
+				name: "Untitled Project",
 				json: "",
 				width: 1080,
 				height: 1080,
@@ -49,12 +47,12 @@ export const Banner = () => {
 	};
 
 	return (
-		<div className="text-black aspect-[5/1] min-h-[248px] flex flex-col p-6 rounded-xl bg-gradient-to-r from-[#b1f643] to-[#fbfbfb] relative">
-			<div className="absolute top-4 right-4"></div>
+		<div className="text-black aspect-[5/1] min-h-[248px] flex flex-col p-6 rounded-xl bg-gradient-to-r from-purple-500 to-pink-100 relative">
+
 			<div className="flex flex-col gap-y-4 items-center justify-center flex-grow">
-				<h1 className="text-xl md:text-3xl font-semibold text-center">
+				<h2 className="text-xl md:text-3xl font-semibold text-center">
 					Bring your creative vision to life with AI-powered graphics
-				</h1>
+				</h2>
 				<p className="text-xs md:text-sm text-center">
 					Build your online presence with AI Graphic Design
 				</p>

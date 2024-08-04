@@ -1,16 +1,20 @@
-import Image from "next/image";
 import Link from "next/link";
+import { Space_Grotesk } from "next/font/google";
 
-export const Logo = () => {
+interface LogoProps {
+	className?: string;
+}
+
+const font = Space_Grotesk({
+	weight: ["700"],
+	subsets: ["latin"],
+});
+
+export const Logo = ({ className }: LogoProps) => {
 	return (
 		<Link href="/">
-			<div className="size-8 relative shrink-0">
-				<Image
-					src="/logo.svg"
-					fill
-					alt="GraphicAI"
-					className="shrink-0 hover:opacity-75 transition"
-				/>
+			<div className={`flex items-center ${className}`}>
+				<h2 className="text-xl font-bold">Graphic AI</h2>
 			</div>
 		</Link>
 	);
