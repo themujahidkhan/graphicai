@@ -1,14 +1,15 @@
-import { 
-  ActiveTool, 
+import {
+  ActiveTool,
   Editor,
   filters,
 } from "@/features/editor/types";
+
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { ToolSidebarClose } from "@/features/editor/components/tool-sidebar-close";
 import { ToolSidebarHeader } from "@/features/editor/components/tool-sidebar-header";
-
 import { cn } from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
+import { v4 as uuidv4 } from 'uuid'; // Import uuid for keys
 
 interface FilterSidebarProps {
   editor: Editor | undefined;
@@ -40,7 +41,7 @@ export const FilterSidebar = ({
         <div className="p-4 space-y-1 border-b">
           {filters.map((filter) => (
             <Button
-              key={filter}
+              key={uuidv4()} // Use uuid for keys
               variant="secondary"
               size="lg"
               className="w-full h-16 justify-start text-left"

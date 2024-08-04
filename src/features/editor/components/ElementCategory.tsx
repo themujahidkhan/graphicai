@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Editor } from "@/features/editor/types";
 import Image from "next/image";
 import { useState } from "react";
+import { v4 as uuidv4 } from 'uuid';
 
 interface ElementCategoryProps {
 	title: string;
@@ -36,7 +37,7 @@ export const ElementCategory = ({
 			<h3 className="text-lg font-semibold mb-2">{title}</h3>
 			<div className="grid grid-cols-2 gap-4">
 				{displayedElements.map((element) => (
-					<div key={element.id} className="relative group">
+					<div key={uuidv4()} className="relative group">
 						<Image
 							src={element.imageUrl}
 							alt={element.name}

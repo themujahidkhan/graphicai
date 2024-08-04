@@ -1,11 +1,11 @@
-import { z } from "zod";
 import { Hono } from "hono";
 import bcrypt from "bcryptjs";
-import { eq } from "drizzle-orm";
-import { zValidator } from "@hono/zod-validator";
-
 import { db } from "@/db/drizzle";
+import { eq } from "drizzle-orm";
 import { users } from "@/db/schema";
+import { v4 as uuidv4 } from "uuid";
+import { z } from "zod";
+import { zValidator } from "@hono/zod-validator";
 
 const app = new Hono()
   .post(
@@ -32,7 +32,9 @@ const app = new Hono()
         return c.json({ error: "Email already in use" }, 400);
       }
 
+
       await db.insert(users).values({
+        id: uuidv4(),
         email,
         name,
         password: hashedPassword,

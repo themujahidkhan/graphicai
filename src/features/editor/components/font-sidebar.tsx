@@ -1,14 +1,15 @@
-import { 
-  ActiveTool, 
+import {
+  ActiveTool,
   Editor,
-  fonts, 
+  fonts,
 } from "@/features/editor/types";
+
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { ToolSidebarClose } from "@/features/editor/components/tool-sidebar-close";
 import { ToolSidebarHeader } from "@/features/editor/components/tool-sidebar-header";
-
 import { cn } from "@/lib/utils";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
+import { v4 as uuidv4 } from 'uuid';
 
 interface FontSidebarProps {
   editor: Editor | undefined;
@@ -42,7 +43,7 @@ export const FontSidebar = ({
         <div className="p-4 space-y-1 border-b">
           {fonts.map((font) => (
             <Button
-              key={font}
+              key={uuidv4()}
               variant="secondary"
               size="lg"
               className={cn(

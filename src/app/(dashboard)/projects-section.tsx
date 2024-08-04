@@ -30,6 +30,7 @@ import { useDeleteProject } from "@/features/projects/api/use-delete-project";
 import { useDuplicateProject } from "@/features/projects/api/use-duplicate-project";
 import { useGetProjects } from "@/features/projects/api/use-get-projects";
 import { useRouter } from "next/navigation";
+import { v4 as uuidv4 } from 'uuid';
 
 export const ProjectsSection = () => {
   const [ConfirmDialog, confirm] = useConfirm(
@@ -117,9 +118,9 @@ export const ProjectsSection = () => {
       <Table>
         <TableBody>
           {data.pages.map((group, i) => (
-            <React.Fragment key={i}>
+            <React.Fragment key={uuidv4()}>
               {group.data.map((project) => (
-                <TableRow key={project.id}>
+                <TableRow key={uuidv4()}>
                   <TableCell
                     onClick={() => router.push(`/editor/${project.id}`)}
                     className="font-medium flex items-center gap-x-2 cursor-pointer"

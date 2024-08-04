@@ -9,6 +9,7 @@ import { useCreateProject } from "@/features/projects/api/use-create-project";
 import { useGetTemplates } from "@/features/projects/api/use-get-templates";
 import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
 import { useRouter } from "next/navigation";
+import { v4 as uuidv4 } from 'uuid';
 
 export const TemplatesSection = () => {
 	const { shouldBlock, triggerPaywall } = usePaywall();
@@ -77,7 +78,7 @@ export const TemplatesSection = () => {
 			<div className="grid grid-cols-2 md:grid-cols-4 mt-4 gap-4">
 				{data?.map((template) => (
 					<TemplateCard
-						key={template.id}
+						key={uuidv4()}
 						title={template.name}
 						imageSrc={template.thumbnailUrl || ""}
 						onClick={() => onClick(template)}
