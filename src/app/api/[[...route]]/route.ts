@@ -21,14 +21,15 @@ function getAuthConfig(c: Context): AuthConfig {
 }
 
 const app = new Hono().basePath("/api");
-app.use("/api/*", cors());
+app.use("*", cors());
+
 app.use(
 	"*",
 	cors({
 		origin: [
 			"https://app.graphicai.design",
-			"http://localhost:3000",
 			"https://graphicai.design",
+			"http://localhost:3000",
 		],
 		allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 		allowHeaders: ["Content-Type", "Authorization"],
