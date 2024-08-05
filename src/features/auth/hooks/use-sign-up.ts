@@ -10,7 +10,7 @@ type RequestType = InferRequestType<(typeof client.api.users)["$post"]>["json"];
 export const useSignUp = () => {
 	const mutation = useMutation<ResponseType, Error, RequestType>({
 		mutationFn: async (json) => {
-			const response = await fetch("https://graphicai.design/api/users", {
+			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
