@@ -1,4 +1,4 @@
-import type { InferRequestType, InferResponseType } from "hono";
+import { InferRequestType, InferResponseType } from "hono";
 
 import { client } from "@/lib/hono";
 import { toast } from "sonner";
@@ -10,17 +10,12 @@ type RequestType = InferRequestType<(typeof client.api.users)["$post"]>["json"];
 export const useSignUp = () => {
 	const mutation = useMutation<ResponseType, Error, RequestType>({
 		mutationFn: async (json) => {
-			const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(json),
-				credentials: "include",
-			});
+			const response = await client.api.users.$post({ json });
+
 			if (!response.ok) {
 				throw new Error("Something went wrong");
 			}
+
 			return await response.json();
 		},
 		onSuccess: () => {

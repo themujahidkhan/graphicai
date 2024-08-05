@@ -3,13 +3,13 @@ import { Context, Hono } from "hono";
 
 import ai from "./ai";
 import authConfig from "@/auth.config";
-import { cors } from "hono/cors";
 import { handle } from "hono/vercel";
 import images from "./images";
 import projects from "./projects";
 import subscriptions from "./subscriptions";
 import users from "./users";
 
+// Revert to "edge" if planning on running on the edge
 export const runtime = "nodejs";
 
 function getAuthConfig(c: Context): AuthConfig {
@@ -21,30 +21,6 @@ function getAuthConfig(c: Context): AuthConfig {
 
 const app = new Hono().basePath("/api");
 
-// CORS middleware
-app.use(
-	"*",
-	cors({
-		origin: [
-			"https://app.graphicai.design",
-			"https://graphicai.design",
-			"http://localhost:3000",
-		],
-		allowMethods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-		allowHeaders: ["Content-Type", "Authorization"],
-		credentials: true,
-		exposeHeaders: ["WWW-Authenticate", "Server-Authorization"],
-		maxAge: 600,
-	}),
-);
-
-// Logging middleware
-app.use("*", async (c, next) => {
-	console.log(`Request received: ${c.req.method} ${c.req.url}`);
-	await next();
-	console.log(`Response sent: ${c.res.status}`);
-});
-
 app.use("*", initAuthConfig(getAuthConfig));
 
 const routes = app
@@ -54,16 +30,9 @@ const routes = app
 	.route("/projects", projects)
 	.route("/subscriptions", subscriptions);
 
-// Handle OPTIONS requests
-app.options("*", (c) => {
-	return c.text("", 204);
-});
-
 export const GET = handle(app);
 export const POST = handle(app);
-export const PUT = handle(app);
 export const PATCH = handle(app);
 export const DELETE = handle(app);
-export const OPTIONS = handle(app);
 
 export type AppType = typeof routes;
