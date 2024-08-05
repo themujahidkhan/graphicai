@@ -41,7 +41,9 @@ interface EditorProps {
 }
 
 export const Editor = ({ initialData }: EditorProps) => {
+	// @ts-ignore
 	const { mutate } = useUpdateProject(initialData.id);
+	// @ts-ignore
 	const [projectName, setProjectName] = useState(initialData.name);
 	const [activeTool, setActiveTool] = useState<ActiveTool>("select");
 
