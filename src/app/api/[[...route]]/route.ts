@@ -10,7 +10,6 @@ import projects from "./projects";
 import subscriptions from "./subscriptions";
 import users from "./users";
 
-// Revert to "edge" if planning on running on the edge
 export const runtime = "nodejs";
 
 function getAuthConfig(c: Context): AuthConfig {
@@ -22,7 +21,7 @@ function getAuthConfig(c: Context): AuthConfig {
 
 const app = new Hono().basePath("/api");
 
-// Single CORS middleware with specific configuration
+// CORS middleware
 app.use(
 	"*",
 	cors({
@@ -39,7 +38,7 @@ app.use(
 	}),
 );
 
-// Logging middleware for debugging
+// Logging middleware
 app.use("*", async (c, next) => {
 	console.log(`Request received: ${c.req.method} ${c.req.url}`);
 	await next();
