@@ -26,7 +26,13 @@ const app = new Hono().basePath("/api");
 app.use(
 	"*",
 	cors({
-		origin: ["https://app.graphicai.design", "http://localhost:3000"],
+		origin: [
+			"https://app.graphicai.design",
+			"http://localhost:3000",
+			"https://app.graphicai.design/api/*",
+			"http://localhost:3000/api/*",
+			"https://graphicai.design",
+		],
 		allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 		allowHeaders: ["Origin", "Content-Type", "Accept", "Authorization"],
 		exposeHeaders: ["Content-Length", "X-Kuma-Revision"],
