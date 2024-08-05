@@ -8,40 +8,49 @@ import { z } from "zod";
 import { zValidator } from "@hono/zod-validator";
 
 const app = new Hono()
-  .post(
-    "/",
-    zValidator(
-      "json",
-      z.object({
-        name: z.string(),
-        email: z.string().email(),
-        password: z.string().min(3).max(20),
-      })
-    ),
-    async (c) => {
-      const { name, email, password } = c.req.valid("json");
+	.use("*", async (c, next) => {
+		// Set common headers for all routes
+		c.header("Access-Control-Allow-Origin", "*");
+		c.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+		c.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+		await next();
+	})
+	.post(
+		"/",
+		zValidator(
+			"json",
+			z.object({
+				name: z.string(),
+				email: z.string().email(),
+				password: z.string().min(3).max(20),
+			}),
+		),
+		async (c) => {
+			const { name, email, password } = c.req.valid("json");
 
-      const hashedPassword = await bcrypt.hash(password, 12);
+			const hashedPassword = await bcrypt.hash(password, 12);
 
-      const query = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, email));
+			const query = await db.select().from(users).where(eq(users.email, email));
 
-      if (query[0]) {
-        return c.json({ error: "Email already in use" }, 400);
-      }
+			if (query[0]) {
+				return c.json({ error: "Email already in use" }, 400);
+			}
 
+			await db.insert(users).values({
+				id: uuidv4(),
+				email,
+				name,
+				password: hashedPassword,
+			});
 
-      await db.insert(users).values({
-        id: uuidv4(),
-        email,
-        name,
-        password: hashedPassword,
-      });
-      
-      return c.json(null, 200);
-    },
-  );
+			c.header("Content-Type", "application/json");
+			return c.json(null, 200);
+		},
+	)
+	.get("/", async (c) => {
+		const allUsers = await db.select().from(users);
+		c.header("Content-Type", "application/json");
+		return c.json({ users: allUsers }, 200);
+	});
 
 export default app;
