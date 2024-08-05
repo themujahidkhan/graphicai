@@ -8,6 +8,6 @@
     }
   ],
   "redirects": [
-    { "source": "http://:domain/:path*", "destination": "https://:domain/:path*", "permanent": true }
+    { "source": "/:path((?!api/).)*", "destination": "https://app.graphicai.design/:path*", "permanent": true }
   ]
 }
