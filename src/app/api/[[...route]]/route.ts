@@ -21,10 +21,25 @@ function getAuthConfig(c: Context): AuthConfig {
 }
 
 const app = new Hono().basePath("/api");
-app.use("*", cors());
+
+// Configure CORS
+app.use(
+	"*",
+	cors({
+		origin: [
+			"https://app.graphicai.design",
+			"http://localhost:3000",
+			"https://graphicai.design",
+		],
+		allowMethods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+		allowHeaders: ["Content-Type", "Authorization"],
+		credentials: true,
+	}),
+);
 
 app.use("*", initAuthConfig(getAuthConfig));
 
+// Routes
 const routes = app
 	.route("/ai", ai)
 	.route("/users", users)
@@ -32,10 +47,14 @@ const routes = app
 	.route("/projects", projects)
 	.route("/subscriptions", subscriptions);
 
+app.route("/api", routes);
+
+// Handle all HTTP methods
 export const GET = handle(app);
 export const POST = handle(app);
 export const PATCH = handle(app);
 export const DELETE = handle(app);
-
 export const OPTIONS = handle(app);
-export type AppType = typeof routes;
+
+// Export the app
+export default app;

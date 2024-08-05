@@ -14,7 +14,6 @@ export const useSignUp = () => {
 			if (!response.ok) {
 				throw new Error("Something went wrong");
 			}
-
 			return await response.json();
 		},
 		onSuccess: () => {
