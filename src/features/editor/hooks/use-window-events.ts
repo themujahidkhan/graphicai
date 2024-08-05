@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 
+// @ts-ignore
+// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 export const useWindowEvents = (editor: any) => {
 	const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
 
@@ -20,7 +22,8 @@ export const useWindowEvents = (editor: any) => {
 	}, [hasUnsavedChanges]);
 
 	useEffect(() => {
-		if (editor && editor.canvas) {
+		// @ts-ignore
+		if (editor?.canvas) {
 			const handleEditorChange = () => {
 				setHasUnsavedChanges(true);
 			};

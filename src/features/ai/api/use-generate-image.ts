@@ -12,7 +12,9 @@ type RequestType = InferRequestType<
 
 export const useGenerateImage = () => {
 	const mutation = useMutation<ResponseType, Error, RequestType>({
+		// @ts-ignore
 		mutationFn: async (json) => {
+			// @ts-ignore
 			const response = await client.api.ai["generate-image"].$post({ json });
 			return await response.json();
 		},

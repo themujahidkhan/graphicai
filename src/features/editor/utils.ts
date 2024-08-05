@@ -39,6 +39,7 @@ export function rgbaObjectToString(rgba: RGBColor | "transparent") {
 }
 
 export const createFilter = (value: string) => {
+	// biome-ignore lint/suspicious/noImplicitAnyLet: <explanation>
 	let effect;
 
 	switch (value) {

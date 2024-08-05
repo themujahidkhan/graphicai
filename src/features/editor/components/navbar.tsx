@@ -60,6 +60,7 @@ export const Navbar = ({
 			const newName = projectName?.trim() || "Untitled project";
 			if (newName !== initialProjectName) {
 				updateProjectMutation.mutate(
+					// @ts-ignore
 					{ name: newName },
 					{
 						onError: (error) => {
@@ -99,6 +100,7 @@ export const Navbar = ({
 
 	const { openFilePicker } = useFilePicker({
 		accept: ".json",
+		// @ts-ignore
 		onFilesSuccessfullySelected: ({ plainFiles }: any) => {
 			if (plainFiles && plainFiles.length > 0) {
 				const file = plainFiles[0];

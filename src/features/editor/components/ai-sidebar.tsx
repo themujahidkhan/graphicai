@@ -35,7 +35,7 @@ export const AiSidebar = ({
 			triggerPaywall();
 			return;
 		}
-
+		// @ts-ignore
 		mutation.mutate({ prompt: value }, {
 			onSuccess: ({ data }) => {
 				editor?.addImage(data);

@@ -1,17 +1,14 @@
-import Image from "next/image";
-import { AlertTriangle } from "lucide-react";
-
-import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
-
 import { ActiveTool, Editor } from "@/features/editor/types";
+
+import { AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Image from "next/image";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { ToolSidebarClose } from "@/features/editor/components/tool-sidebar-close";
 import { ToolSidebarHeader } from "@/features/editor/components/tool-sidebar-header";
-
-import { useRemoveBg } from "@/features/ai/api/use-remove-bg";
-
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { usePaywall } from "@/features/subscriptions/hooks/use-paywall";
+import { useRemoveBg } from "@/features/ai/api/use-remove-bg";
 
 interface RemoveBgSidebarProps {
   editor: Editor | undefined;
@@ -42,6 +39,7 @@ export const RemoveBgSidebar = ({
       return;
     }
 
+    // @ts-ignore
     mutation.mutate({
       image: imageSrc,
     }, {

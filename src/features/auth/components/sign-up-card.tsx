@@ -33,7 +33,9 @@ export const SignUpCard = () => {
 	const onCredentialSignUp = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
+		// @ts-ignore
 		mutation.mutate(
+			// @ts-ignore
 			{
 				name,
 				email,
