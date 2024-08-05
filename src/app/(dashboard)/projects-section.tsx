@@ -42,6 +42,7 @@ export const ProjectsSection = () => {
   const router = useRouter();
 
   const onCopy = (id: string) => {
+    // @ts-ignore
     duplicateMutation.mutate({ id });
   };
 
@@ -49,6 +50,7 @@ export const ProjectsSection = () => {
     const ok = await confirm();
 
     if (ok) {
+      // @ts-ignore
       removeMutation.mutate({ id });
     }
   };
@@ -61,6 +63,7 @@ export const ProjectsSection = () => {
     hasNextPage,
   } = useGetProjects();
 
+  // @ts-ignore
   if (status === "pending") {
     return (
       <div className="space-y-4">
@@ -92,6 +95,7 @@ export const ProjectsSection = () => {
 
   if (
     !data.pages.length ||
+    // @ts-ignore
     !data.pages[0].data.length
   ) {
     return (
@@ -119,6 +123,7 @@ export const ProjectsSection = () => {
         <TableBody>
           {data.pages.map((group, i) => (
             <React.Fragment key={uuidv4()}>
+              {/* @ts-ignore */}
               {group.data.map((project) => (
                 <TableRow key={uuidv4()}>
                   <TableCell

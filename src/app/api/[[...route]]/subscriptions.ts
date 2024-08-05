@@ -8,155 +8,146 @@ import { subscriptions } from "@/db/schema";
 import { verifyAuth } from "@hono/auth-js";
 
 const app = new Hono()
-  .post("/billing", verifyAuth(), async (c) => {
-    const auth = c.get("authUser");
+	.post("/billing", verifyAuth(), async (c) => {
+		const auth = c.get("authUser");
 
-    if (!auth.token?.id) {
-      return c.json({ error: "Unauthorized" }, 401);
-    }
+		if (!auth.token?.id) {
+			return c.json({ error: "Unauthorized" }, 401);
+		}
 
-    const [subscription] = await db
-      .select()
-      .from(subscriptions)
-      .where(eq(subscriptions.userId, auth.token.id));
+		const [subscription] = await db
+			.select()
+			.from(subscriptions)
+			.where(eq(subscriptions.userId, auth.token.id));
 
-    if (!subscription) {
-      return c.json({ error: "No subscription found" }, 404);
-    }
+		if (!subscription) {
+			return c.json({ error: "No subscription found" }, 404);
+		}
 
-    const session = await stripe.billingPortal.sessions.create({
-      customer: subscription.customerId,
-      return_url: `${process.env.NEXT_PUBLIC_APP_URL}`,
-    });
+		const session = await stripe.billingPortal.sessions.create({
+			customer: subscription.customerId,
+			return_url: `${process.env.NEXT_PUBLIC_APP_URL}`,
+		});
 
-    if (!session.url) {
-      return c.json({ error: "Failed to create session" }, 400);
-    }
+		if (!session.url) {
+			return c.json({ error: "Failed to create session" }, 400);
+		}
 
-    return c.json({ data: session.url });
-  })
-  .get("/current", verifyAuth(), async (c) => {
-    const auth = c.get("authUser");
+		return c.json({ data: session.url });
+	})
+	.get("/current", verifyAuth(), async (c) => {
+		const auth = c.get("authUser");
 
-    if (!auth.token?.id) {
-      return c.json({ error: "Unauthorized" }, 401);
-    }
+		if (!auth.token?.id) {
+			return c.json({ error: "Unauthorized" }, 401);
+		}
 
-    const [subscription] = await db
-      .select()
-      .from(subscriptions)
-      .where(eq(subscriptions.userId, auth.token.id));
+		const [subscription] = await db
+			.select()
+			.from(subscriptions)
+			.where(eq(subscriptions.userId, auth.token.id));
 
-    const active = checkIsActive(subscription);
+		const active = checkIsActive(subscription);
 
-    return c.json({
-      data: {
-        ...subscription,
-        active,
-      },
-    });
-  })
-  .post("/checkout", verifyAuth(), async (c) => {
-    const auth = c.get("authUser");
+		return c.json({
+			data: {
+				...subscription,
+				active,
+			},
+		});
+	})
+	.post("/checkout", verifyAuth(), async (c) => {
+		const auth = c.get("authUser");
 
-    if (!auth.token?.id) {
-      return c.json({ error: "Unauthorized" }, 401);
-    }
+		if (!auth.token?.id) {
+			return c.json({ error: "Unauthorized" }, 401);
+		}
 
-    const session = await stripe.checkout.sessions.create({
-      success_url: `${process.env.NEXT_PUBLIC_APP_URL}?success=1`,
-      cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}?canceled=1`,
-      payment_method_types: ["card", "paypal"],
-      mode: "subscription",
-      billing_address_collection: "auto",
-      customer_email: auth.token.email || "",
-      line_items: [
-        {
-          price: process.env.STRIPE_PRICE_ID,
-          quantity: 1,
-        },
-      ],
-      metadata: {
-        userId: auth.token.id,
-      },
-    });
+		const session = await stripe.checkout.sessions.create({
+			success_url: `${process.env.NEXT_PUBLIC_APP_URL}?success=1`,
+			cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}?canceled=1`,
+			payment_method_types: ["card", "paypal"],
+			mode: "subscription",
+			billing_address_collection: "auto",
+			customer_email: auth.token.email || "",
+			line_items: [
+				{
+					price: process.env.STRIPE_PRICE_ID,
+					quantity: 1,
+				},
+			],
+			metadata: {
+				userId: auth.token.id,
+			},
+		});
 
-    const url = session.url;
-    
-    if (!url) {
-      return c.json({ error: "Failed to create session" }, 400);
-    }
+		const url = session.url;
 
-    return c.json({ data: url });
-  })
-  .post(
-    "/webhook",
-    async (c) => {
-      const body = await c.req.text();
-      const signature = c.req.header("Stripe-Signature") as string;
+		if (!url) {
+			return c.json({ error: "Failed to create session" }, 400);
+		}
 
-      let event: Stripe.Event;
+		return c.json({ data: url });
+	})
+	.post("/webhook", async (c) => {
+		const body = await c.req.text();
+		const signature = c.req.header("Stripe-Signature") as string;
 
-      try {
-        event = stripe.webhooks.constructEvent(
-          body,
-          signature,
-          process.env.STRIPE_WEBHOOK_SECRET!
-        );
-      } catch (error) {
-        return c.json({ error: "Invalid signature" }, 400);
-      }
+		let event: Stripe.Event;
 
-      const session = event.data.object as Stripe.Checkout.Session;
+		try {
+			event = stripe.webhooks.constructEvent(
+				body,
+				signature,
+				process.env.STRIPE_WEBHOOK_SECRET || "",
+			);
+		} catch (error) {
+			return c.json({ error: "Invalid signature" }, 400);
+		}
 
-      if (event.type === "checkout.session.completed") {
-        const subscription = await stripe.subscriptions.retrieve(
-          session.subscription as string,
-        );
+		const session = event.data.object as Stripe.Checkout.Session;
 
-        if (!session?.metadata?.userId) {
-          return c.json({ error: "Invalid session" }, 400);
-        }
+		if (event.type === "checkout.session.completed") {
+			const subscription = await stripe.subscriptions.retrieve(
+				session.subscription as string,
+			);
 
-        await db
-          .insert(subscriptions)
-          .values({
-            status: subscription.status,
-            userId: session.metadata.userId,
-            subscriptionId: subscription.id,
-            customerId: subscription.customer as string,
-            priceId: subscription.items.data[0].price.product as string,
-            currentPeriodEnd: new Date(
-              subscription.current_period_end * 1000
-            ),
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          });
-      }
+			if (!session?.metadata?.userId) {
+				return c.json({ error: "Invalid session" }, 400);
+			}
 
-      if (event.type === "invoice.payment_succeeded") {
-        const subscription = await stripe.subscriptions.retrieve(
-          session.subscription as string,
-        );
+			await db.insert(subscriptions).values({
+				status: subscription.status,
+				userId: session.metadata.userId,
+				subscriptionId: subscription.id,
+				customerId: subscription.customer as string,
+				priceId: subscription.items.data[0].price.product as string,
+				currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+				createdAt: new Date(),
+				updatedAt: new Date(),
+			});
+		}
 
-        if (!session?.metadata?.userId) {
-          return c.json({ error: "Invalid session" }, 400);
-        }
+		if (event.type === "invoice.payment_succeeded") {
+			const subscription = await stripe.subscriptions.retrieve(
+				session.subscription as string,
+			);
 
-        await db
-          .update(subscriptions)
-          .set({
-            status: subscription.status,
-            currentPeriodEnd: new Date(
-              subscription.current_period_end * 1000,
-            ),
-            updatedAt: new Date(),
-          })
-          .where(eq(subscriptions.id, subscription.id))
-      }
+			if (!session?.metadata?.userId) {
+				return c.json({ error: "Invalid session" }, 400);
+			}
 
-      return c.json(null, 200);
-    },
-  );
+			await db
+				.update(subscriptions)
+				.set({
+					status: subscription.status,
+					currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+					updatedAt: new Date(),
+				})
+				.where(eq(subscriptions.id, subscription.id));
+		}
+
+		return c.json(null, 200);
+	});
 
 export default app;

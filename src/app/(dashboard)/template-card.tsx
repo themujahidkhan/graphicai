@@ -1,6 +1,5 @@
-import Image from "next/image";
 import { Crown } from "lucide-react";
-
+import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 interface TemplateCardProps {
@@ -26,6 +25,7 @@ export const TemplateCard = ({
 }: TemplateCardProps) => {
   return (
     <button
+      type="button"
       onClick={onClick}
       disabled={disabled}
       className={cn(
@@ -34,8 +34,8 @@ export const TemplateCard = ({
       )}
     >
       <div
-      style={{ aspectRatio: `${width}/${height}` }}
-      className="relative rounded-xl h-full w-full overflow-hidden border">
+        style={{ aspectRatio: `${width}/${height}` }}
+        className="relative rounded-xl h-full w-full overflow-hidden border">
         <Image
           fill
           src={imageSrc}
