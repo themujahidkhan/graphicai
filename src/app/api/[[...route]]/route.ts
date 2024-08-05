@@ -3,6 +3,7 @@ import { Context, Hono } from "hono";
 
 import ai from "./ai";
 import authConfig from "@/auth.config";
+import { cors } from "hono/cors";
 import { handle } from "hono/vercel";
 import images from "./images";
 import projects from "./projects";
@@ -21,6 +22,19 @@ function getAuthConfig(c: Context): AuthConfig {
 
 const app = new Hono().basePath("/api");
 
+// Add CORS middleware
+app.use(
+	"*",
+	cors({
+		origin: ["https://app.graphicai.design", "http://localhost:3000"],
+		allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+		allowHeaders: ["Origin", "Content-Type", "Accept", "Authorization"],
+		exposeHeaders: ["Content-Length", "X-Kuma-Revision"],
+		maxAge: 600,
+		credentials: true,
+	}),
+);
+
 app.use("*", initAuthConfig(getAuthConfig));
 
 const routes = app
@@ -34,5 +48,6 @@ export const GET = handle(app);
 export const POST = handle(app);
 export const PATCH = handle(app);
 export const DELETE = handle(app);
+export const OPTIONS = handle(app);
 
 export type AppType = typeof routes;

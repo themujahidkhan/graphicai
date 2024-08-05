@@ -69,8 +69,8 @@ export default {
 		Google,
 	],
 	pages: {
-		signIn: "/api/auth/sign-in",
-		error: "/api/auth/sign-in",
+		signIn: "/sign-in",
+		error: "/sign-in",
 	},
 	session: {
 		strategy: "jwt",
