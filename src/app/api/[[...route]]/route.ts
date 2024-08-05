@@ -27,9 +27,9 @@ app.use(
 	"*",
 	cors({
 		origin: [
-			"https://app.graphicai.design",
-			"http://localhost:3000",
-			"https://graphicai.design",
+			"app.graphicai.design",
+			"localhost:3000",
+			"graphicai.design",
 		],
 		allowMethods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
 		allowHeaders: ["Origin", "Content-Type", "Accept", "Authorization"],

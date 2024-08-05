@@ -9,7 +9,6 @@ import { zValidator } from "@hono/zod-validator";
 
 const app = new Hono()
 	.use("*", async (c, next) => {
-		// Set common headers for all routes
 		c.header("Access-Control-Allow-Origin", "*");
 		c.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		c.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
