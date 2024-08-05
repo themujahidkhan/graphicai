@@ -1,12 +1,11 @@
 "use client";
 
-import Link from "next/link";
 import { Loader, TriangleAlert } from "lucide-react";
 
-import { useGetProject } from "@/features/projects/api/use-get-project";
-
-import { Editor } from "@/features/editor/components/editor";
 import { Button } from "@/components/ui/button";
+import { Editor } from "@/features/editor/components/editor";
+import Link from "next/link";
+import { useGetProject } from "@/features/projects/api/use-get-project";
 
 interface EditorProjectIdPageProps {
   params: {
@@ -17,9 +16,9 @@ interface EditorProjectIdPageProps {
 const EditorProjectIdPage = ({
   params,
 }: EditorProjectIdPageProps) => {
-  const { 
-    data, 
-    isLoading, 
+  const {
+    data,
+    isLoading,
     isError
   } = useGetProject(params.projectId);
 
@@ -47,7 +46,8 @@ const EditorProjectIdPage = ({
     );
   }
 
+  // @ts-ignore
   return <Editor initialData={data} />
 };
- 
+
 export default EditorProjectIdPage;

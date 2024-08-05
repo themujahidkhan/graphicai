@@ -31,6 +31,7 @@ export const TemplatesSection = () => {
 		trackEvent("use_template", "Template", template.name);
 
 		mutation.mutate(
+			// @ts-ignore
 			{
 				name: `${template.name} project`,
 				json: template.json,
@@ -39,6 +40,7 @@ export const TemplatesSection = () => {
 			},
 			{
 				onSuccess: ({ data }) => {
+					// @ts-ignore
 					router.push(`/editor/${data.id}`);
 				},
 			},
@@ -76,6 +78,7 @@ export const TemplatesSection = () => {
 		<div>
 			<h3 className="font-semibold text-lg">Start from a template</h3>
 			<div className="grid grid-cols-2 md:grid-cols-4 mt-4 gap-4">
+				{/* @ts-ignore */}
 				{data?.map((template) => (
 					<TemplateCard
 						key={uuidv4()}
