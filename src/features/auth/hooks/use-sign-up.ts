@@ -9,10 +9,11 @@ type RequestType = InferRequestType<(typeof client.api.users)["$post"]>["json"];
 
 export const useSignUp = () => {
 	const mutation = useMutation<ResponseType, Error, RequestType>({
-		// @ts-ignore
 		mutationFn: async (json) => {
-			// @ts-ignore
-			const response = await client.api.users.$post({ json });
+			const response = await client.api.users.$post({
+				json,
+				credentials: "include",
+			});
 
 			if (!response.ok) {
 				throw new Error("Something went wrong");
