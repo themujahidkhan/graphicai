@@ -26,7 +26,7 @@ app.use("*", initAuthConfig(getAuthConfig));
 app.use(
 	"/api/*",
 	cors({
-		origin: "*",
+		origin: ["https://app.graphicai.design", "https://graphicai.design"],
 		allowHeaders: ["X-Custom-Header", "Upgrade-Insecure-Requests"],
 		allowMethods: ["POST", "GET", "OPTIONS"],
 		exposeHeaders: ["Content-Length", "X-Kuma-Revision"],
