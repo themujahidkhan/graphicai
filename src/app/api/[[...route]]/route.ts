@@ -3,6 +3,7 @@ import { Context, Hono } from "hono";
 
 import ai from "./ai";
 import authConfig from "@/auth.config";
+import { cors } from "hono/cors";
 import { handle } from "hono/vercel";
 import images from "./images";
 import projects from "./projects";
@@ -22,7 +23,17 @@ function getAuthConfig(c: Context): AuthConfig {
 const app = new Hono().basePath("/api");
 
 app.use("*", initAuthConfig(getAuthConfig));
-
+app.use(
+	"/api/*",
+	cors({
+		origin: "*",
+		allowHeaders: ["X-Custom-Header", "Upgrade-Insecure-Requests"],
+		allowMethods: ["POST", "GET", "OPTIONS"],
+		exposeHeaders: ["Content-Length", "X-Kuma-Revision"],
+		maxAge: 600,
+		credentials: true,
+	}),
+);
 const routes = app
 	.route("/ai", ai)
 	.route("/users", users)
