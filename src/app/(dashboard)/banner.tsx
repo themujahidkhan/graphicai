@@ -29,7 +29,7 @@ export const Banner = () => {
 	};
 
 	return (
-		<div className="text-black aspect-[5/1] min-h-[248px] flex gap-x-6 p-6 items-center rounded-xl bg-gradient-to-r from-[#e1ed05] to-[#fbfbfb]">
+		<div className="text-black aspect-[5/1] min-h-[248px] flex gap-x-6 p-6 items-center rounded-xl bg-gradient-to-r from-[#e1ff00] to-[#fbfbfb]">
 			<div className="rounded-full size-28 items-center justify-center bg-white/50 hidden md:flex">
 				<div className="rounded-full size-20 flex items-center justify-center bg-white">
 					<Sparkles className="h-20 text-[#0073ff] fill-[#0073ff]" />

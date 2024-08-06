@@ -25,7 +25,7 @@ export const Sidebar = ({ activeTool, onChangeActiveTool }: SidebarProps) => {
 			<ul className="flex flex-col">
 				<SidebarItem
 					icon={IconLayoutDashboard}
-					label="Design"
+					label="Templates"
 					isActive={activeTool === "templates"}
 					onClick={() => onChangeActiveTool("templates")}
 				/>

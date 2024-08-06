@@ -1,18 +1,9 @@
 "use client";
 
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
-
 import { Button } from "@/components/ui/button";
 import { FcGoogle } from "react-icons/fc";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { Separator } from "@/components/ui/separator";
 import { TriangleAlert } from "lucide-react";
 import { signIn } from "next-auth/react";
 import { useAnalytics } from "@/hooks/useAnalytics";
@@ -44,58 +35,67 @@ export const SignInCard = () => {
 	};
 
 	return (
-		<Card className="w-full h-full p-8">
-			<CardHeader className="px-0 pt-0">
-				<CardTitle>Login to continue</CardTitle>
-				<CardDescription>
-					Use your email or another service to continue
-				</CardDescription>
-			</CardHeader>
+		<div className="w-full max-w-md mx-auto">
+			<h2 className="text-3xl font-bold mb-2">Login to continue</h2>
+			<p className="text-gray-600 mb-6">
+				Use your email or another service to continue
+			</p>
 			{!!error && (
-				<div className="bg-destructive/15 p-3 rounded-md flex items-center gap-x-2 text-sm text-destructive mb-6">
-					<TriangleAlert className="size-4" />
-					<p>Invalid email or password</p>
+				<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-6" role="alert">
+					<div className="flex items-center">
+						<TriangleAlert className="w-5 h-5 mr-2" />
+						<span>Invalid email or password</span>
+					</div>
 				</div>
 			)}
-			<CardContent className="space-y-5 px-0 pb-0">
-				<form onSubmit={onCredentialSignIn} className="space-y-2.5">
-					<Input
-						value={email}
-						onChange={(e) => setEmail(e.target.value)}
-						placeholder="Email"
-						type="email"
-						required
-					/>
-					<Input
-						value={password}
-						onChange={(e) => setPassword(e.target.value)}
-						placeholder="Password"
-						type="password"
-						required
-					/>
-					<Button type="submit" className="w-full" size="lg">
-						Continue
-					</Button>
-				</form>
-				<Separator />
-				<div className="flex flex-col gap-y-2.5">
+			<form onSubmit={onCredentialSignIn} className="space-y-4">
+				<Input
+					value={email}
+					onChange={(e) => setEmail(e.target.value)}
+					placeholder="Email"
+					type="email"
+					required
+					className="w-full"
+				/>
+				<Input
+					value={password}
+					onChange={(e) => setPassword(e.target.value)}
+					placeholder="Password"
+					type="password"
+					required
+					className="w-full"
+				/>
+				<Button type="submit" className="w-full" size="lg">
+					Sign In
+				</Button>
+			</form>
+			<div className="mt-6">
+				<div className="relative">
+					<div className="absolute inset-0 flex items-center">
+						<div className="w-full border-t border-gray-300"></div>
+					</div>
+					<div className="relative flex justify-center text-sm">
+						<span className="px-2 bg-white text-gray-500">Or continue with</span>
+					</div>
+				</div>
+				<div className="mt-6">
 					<Button
 						onClick={() => onProviderSignIn("google")}
 						variant="outline"
 						size="lg"
 						className="w-full relative"
 					>
-						<FcGoogle className="mr-2 size-5 top-2.5 left-2.5 absolute" />
+						<FcGoogle className="mr-2 w-5 h-5" />
 						Continue with Google
 					</Button>
 				</div>
-				<p className="text-xs text-muted-foreground">
-					Don&apos;t have an account?{" "}
-					<Link href="/sign-up">
-						<span className="text-sky-700 hover:underline">Sign up</span>
-					</Link>
-				</p>
-			</CardContent>
-		</Card>
+			</div>
+			<p className="mt-8 text-center text-sm text-gray-600">
+				Don&apos;t have an account?{" "}
+				<Link href="/sign-up" className="font-medium text-blue-600 hover:text-blue-500">
+					Sign up
+				</Link>
+			</p>
+		</div>
 	);
 };

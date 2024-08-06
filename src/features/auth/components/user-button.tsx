@@ -13,6 +13,7 @@ import {
 	IconCrown,
 	IconLoader,
 	IconLogout,
+	IconUser,
 } from "@tabler/icons-react";
 import { signOut, useSession } from "next-auth/react";
 
@@ -72,6 +73,10 @@ export const UserButton = () => {
 					Billing
 				</DropdownMenuItem>
 				<DropdownMenuSeparator />
+				<DropdownMenuItem className="h-10" >
+					<IconUser className="size-4 mr-2" />
+					Profile
+				</DropdownMenuItem>
 				<DropdownMenuItem className="h-10" onClick={() => signOut()}>
 					<IconLogout className="size-4 mr-2" />
 					Log out

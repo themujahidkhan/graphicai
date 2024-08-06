@@ -9,7 +9,7 @@ import { zValidator } from "@hono/zod-validator";
 
 const app = new Hono()
 	.use("*", async (c, next) => {
-		c.header("Access-Control-Allow-Origin", "https://app.graphicai.design");
+		c.header("Access-Control-Allow-Origin", "*");
 		c.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
 		c.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
 		c.header("Access-Control-Allow-Credentials", "true");

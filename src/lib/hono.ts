@@ -1,7 +1,9 @@
 import { hc } from "hono/client";
 
-const apiUrl =
-	process.env.NEXT_PUBLIC_API_URL || "https://app.graphicai.design";
+const isDevelopment = process.env.NODE_ENV === "development";
+const apiUrl = isDevelopment
+	? "http://localhost:3000"
+	: "https://app.graphicai.design";
 
 export const client = hc(apiUrl, {
 	headers: {
