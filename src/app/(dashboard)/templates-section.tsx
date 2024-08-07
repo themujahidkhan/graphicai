@@ -80,6 +80,7 @@ export const TemplatesSection = () => {
 			<div className="grid grid-cols-2 md:grid-cols-4 mt-4 gap-4">
 				{/* @ts-ignore */}
 				{data?.map((template) => (
+
 					<TemplateCard
 						key={uuidv4()}
 						title={template.name}

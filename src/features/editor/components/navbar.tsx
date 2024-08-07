@@ -55,25 +55,76 @@ export const Navbar = ({
 	const [projectName, setProjectName] = useState(initialProjectName);
 	const updateProjectMutation = useUpdateProject(id);
 
-	useEffect(() => {
-		const debounceTimer = setTimeout(() => {
-			const newName = projectName?.trim() || "Untitled project";
-			if (newName !== initialProjectName) {
-				updateProjectMutation.mutate(
-					// @ts-ignore
-					{ name: newName },
-					{
-						onError: (error) => {
-							console.error("Failed to update project name:", error);
-							setProjectName(initialProjectName || "Untitled project");
-						},
-					},
-				);
-			}
-		}, 3000);
+	const saveThumbnail = async () => {
+		if (editor) {
+			const thumbnailDataUrl = editor.getThumbnail();
+			console.log("Thumbnail Data URL:", thumbnailDataUrl);
+			if (thumbnailDataUrl) {
+				try {
+					const formData = new FormData();
+					formData.append('thumbnail', dataURLtoFile(thumbnailDataUrl, 'thumbnail.png'));
+					formData.append('projectId', id);
 
-		return () => clearTimeout(debounceTimer);
-	}, [projectName, updateProjectMutation, initialProjectName]);
+					const response = await fetch('/api/projects/thumbnail', {
+						method: 'POST',
+						body: formData,
+					});
+					console.log("Thumbnail upload response:", response);
+
+					if (!response.ok) {
+						throw new Error('Failed to save thumbnail');
+					}
+
+					const { thumbnailUrl } = await response.json();
+					console.log("Thumbnail URL:", thumbnailUrl);
+
+					// Update the project with the new thumbnail URL
+					await updateProjectMutation.mutateAsync({ thumbnailUrl });
+
+					console.log("Project updated with new thumbnail URL");
+				} catch (error) {
+					console.error('Error saving thumbnail:', error);
+				}
+			}
+		}
+	};
+
+
+
+	const dataURLtoFile = (dataurl: string, filename: string) => {
+		const arr = dataurl.split(',');
+		const mime = arr[0].match(/:(.*?);/)?.[1];
+		const bstr = atob(arr[1]);
+		let n = bstr.length;
+		const u8arr = new Uint8Array(n);
+		while (n--) {
+			u8arr[n] = bstr.charCodeAt(n);
+		}
+		return new File([u8arr], filename, { type: mime });
+	};
+
+
+	useEffect(() => {
+  const debounceTimer = setTimeout(async () => {
+    const newName = projectName?.trim() || "Untitled project";
+    if (newName !== initialProjectName && newName !== "Untitled project") {
+      updateProjectMutation.mutate(
+        { name: newName },
+        {
+          onSuccess: () => {
+            saveThumbnail();
+          },
+          onError: (error) => {
+            console.error("Failed to update project name:", error);
+            setProjectName(initialProjectName || "Untitled project");
+          },
+        },
+      );
+    }
+  }, 3000);
+
+  return () => clearTimeout(debounceTimer);
+}, [projectName, updateProjectMutation, initialProjectName, saveThumbnail]);
 
 	const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setProjectName(e.target.value);

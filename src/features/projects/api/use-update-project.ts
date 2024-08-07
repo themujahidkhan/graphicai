@@ -17,25 +17,20 @@ export const useUpdateProject = (id: string) => {
 
 	const mutation = useMutation<ResponseType, Error, RequestType>({
 		mutationKey: ["project", { id }],
-		mutationFn: async (data) => {
-			const response = await client.api.projects[":id"].$patch({
+		mutationFn: async (json) => {
+			const response = await client.api.projects[id].$patch({
 				json: {
-					...data,
-					name: data.name?.trim() || "Untitled project",
+					name: json.name,
+					json: json.json,
+					width: json.width,
+					height: json.height,
+					thumbnailUrl: json.thumbnailUrl,
 				},
-				param: { id },
 			});
 
 			if (!response.ok) {
 				const errorData = await response.json();
-				throw new Error(
-					"error" in errorData &&
-						typeof errorData.error === "object" &&
-						errorData.error !== null
-						? (errorData.error as { message?: string }).message ||
-								"Failed to update project"
-						: "Failed to update project",
-				);
+				throw new Error(errorData.error || "Failed to update project");
 			}
 
 			return await response.json();

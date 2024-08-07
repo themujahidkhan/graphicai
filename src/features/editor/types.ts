@@ -223,6 +223,7 @@ export type BuildEditorProps = {
 };
 
 export interface Editor {
+	getThumbnail: () => void;
 	addSquare: () => void;
 	addPolygon: () => void;
 	addCallout: () => void;

@@ -759,6 +759,20 @@ const buildEditor = ({
 			});
 			addToCanvas(object);
 		},
+		getThumbnail: () => {
+			const workspace = getWorkspace();
+			if (workspace) {
+				const tempCanvas = document.createElement("canvas");
+				const tempContext = tempCanvas.getContext("2d");
+				const scaleFactor = 200 / workspace.width;
+				tempCanvas.width = 200;
+				tempCanvas.height = workspace.height * scaleFactor;
+				tempContext?.scale(scaleFactor, scaleFactor);
+				workspace.render(tempContext);
+				return tempCanvas.toDataURL("image/png");
+			}
+			return null;
+		},
 	};
 };
 

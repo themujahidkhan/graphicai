@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/table";
 
 import { Button } from "@/components/ui/button";
+import Image from "next/image";
 import React from "react";
 import { formatDistanceToNow } from "date-fns";
 import { useConfirm } from "@/hooks/use-confirm";
@@ -125,19 +126,41 @@ export const ProjectsSection = () => {
             <React.Fragment key={uuidv4()}>
               {/* @ts-ignore */}
               {group.data.map((project) => (
+
                 <TableRow key={uuidv4()}>
                   <TableCell
                     onClick={() => router.push(`/editor/${project.id}`)}
                     className="font-medium flex items-center gap-x-2 cursor-pointer"
                   >
-                    <FileIcon className="size-6" />
-                    {project.name}
-                  </TableCell>
-                  <TableCell
-                    onClick={() => router.push(`/editor/${project.id}`)}
-                    className="hidden md:table-cell cursor-pointer"
-                  >
-                    {project.width} x {project.height} px
+                    <div className="relative w-16 h-16 rounded-md overflow-hidden">
+  {project.thumbnailUrl ? (
+    <Image
+      src={project.thumbnailUrl}
+      alt={project.name}
+      width={64}
+      height={64}
+      className="object-cover"
+    />
+  ) : project.templateThumbnailUrl ? (
+    <Image
+      src={project.templateThumbnailUrl}
+      alt={project.name}
+      width={64}
+      height={64}
+      className="object-cover"
+    />
+  ) : (
+    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+      <FileIcon className="size-6 text-gray-400" />
+    </div>
+  )}
+</div>
+                    <div>
+                      <p>{project.name}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {project.width} x {project.height} px
+                      </p>
+                    </div>
                   </TableCell>
                   <TableCell
                     onClick={() => router.push(`/editor/${project.id}`)}
