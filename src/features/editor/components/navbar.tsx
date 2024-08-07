@@ -35,6 +35,7 @@ import { cn } from "@/lib/utils";
 import { useFilePicker } from "use-file-picker";
 import { useMutationState } from "@tanstack/react-query";
 import { useUpdateProject } from "@/features/projects/api/use-update-project";
+import { useWindowEvents } from "@/features/editor/hooks/use-window-events";
 
 interface NavbarProps {
 	id: string;
@@ -54,6 +55,7 @@ export const Navbar = ({
 }: NavbarProps) => {
 	const [projectName, setProjectName] = useState(initialProjectName);
 	const updateProjectMutation = useUpdateProject(id);
+	const { hasUnsavedChanges, resetUnsavedChanges } = useWindowEvents(editor);
 
 	const saveThumbnail = async () => {
 		if (editor) {
@@ -61,21 +63,25 @@ export const Navbar = ({
 			console.log("Thumbnail Data URL:", thumbnailDataUrl);
 			if (thumbnailDataUrl) {
 				try {
+					// Convert data URL to Blob
+					const response = await fetch(thumbnailDataUrl);
+					const blob = await response.blob();
+
 					const formData = new FormData();
-					formData.append('thumbnail', dataURLtoFile(thumbnailDataUrl, 'thumbnail.png'));
+					formData.append('thumbnail', blob, 'thumbnail.png');
 					formData.append('projectId', id);
 
-					const response = await fetch('/api/projects/thumbnail', {
+					const uploadResponse = await fetch('/api/projects/thumbnail', {
 						method: 'POST',
 						body: formData,
 					});
-					console.log("Thumbnail upload response:", response);
+					console.log("Thumbnail upload response:", uploadResponse);
 
-					if (!response.ok) {
+					if (!uploadResponse.ok) {
 						throw new Error('Failed to save thumbnail');
 					}
 
-					const { thumbnailUrl } = await response.json();
+					const { thumbnailUrl } = await uploadResponse.json();
 					console.log("Thumbnail URL:", thumbnailUrl);
 
 					// Update the project with the new thumbnail URL
@@ -85,7 +91,11 @@ export const Navbar = ({
 				} catch (error) {
 					console.error('Error saving thumbnail:', error);
 				}
+			} else {
+				console.error('Thumbnail data URL is empty');
 			}
+		} else {
+			console.error('Editor is not available');
 		}
 	};
 
@@ -105,26 +115,22 @@ export const Navbar = ({
 
 
 	useEffect(() => {
-  const debounceTimer = setTimeout(async () => {
-    const newName = projectName?.trim() || "Untitled project";
-    if (newName !== initialProjectName && newName !== "Untitled project") {
-      updateProjectMutation.mutate(
-        { name: newName },
-        {
-          onSuccess: () => {
-            saveThumbnail();
-          },
-          onError: (error) => {
-            console.error("Failed to update project name:", error);
-            setProjectName(initialProjectName || "Untitled project");
-          },
-        },
-      );
-    }
-  }, 3000);
+		const debounceTimer = setTimeout(async () => {
+			const newName = projectName?.trim() || "Untitled project";
+			if (newName !== initialProjectName || hasUnsavedChanges) {
+				try {
+					await updateProjectMutation.mutateAsync({ name: newName });
+					await saveThumbnail();
+					resetUnsavedChanges();
+				} catch (error) {
+					console.error("Failed to update project or save thumbnail:", error);
+					setProjectName(initialProjectName || "Untitled project");
+				}
+			}
+		}, 3000);
 
-  return () => clearTimeout(debounceTimer);
-}, [projectName, updateProjectMutation, initialProjectName, saveThumbnail]);
+		return () => clearTimeout(debounceTimer);
+	}, [projectName, updateProjectMutation, initialProjectName, editor, saveThumbnail, hasUnsavedChanges, resetUnsavedChanges]);
 
 	const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setProjectName(e.target.value);

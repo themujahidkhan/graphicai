@@ -759,19 +759,32 @@ const buildEditor = ({
 			});
 			addToCanvas(object);
 		},
-		getThumbnail: () => {
-			const workspace = getWorkspace();
-			if (workspace) {
-				const tempCanvas = document.createElement("canvas");
-				const tempContext = tempCanvas.getContext("2d");
-				const scaleFactor = 200 / workspace.width;
-				tempCanvas.width = 200;
-				tempCanvas.height = workspace.height * scaleFactor;
-				tempContext?.scale(scaleFactor, scaleFactor);
-				workspace.render(tempContext);
-				return tempCanvas.toDataURL("image/png");
+		getThumbnail(): string {
+			const canvas = this.canvas;
+			if (canvas) {
+				// Set a white background
+				const ctx = canvas.getContext("2d");
+				ctx.save();
+				ctx.fillStyle = "white";
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+				// Draw the canvas content
+				canvas.renderAll();
+
+				// Get the data URL
+				const dataURL = canvas.toDataURL({
+					format: "png",
+					quality: 0.8,
+					multiplier: 1, // Adjust this value to change the thumbnail size
+				});
+
+				// Restore the canvas state
+				ctx.restore();
+				canvas.renderAll();
+
+				return dataURL;
 			}
-			return null;
+			return "";
 		},
 	};
 };

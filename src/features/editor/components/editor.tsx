@@ -74,7 +74,7 @@ export const Editor = ({ initialData }: EditorProps) => {
 				// @ts-ignore
 				mutate(values);
 			},
-			2500,
+			3500,
 		),
 		[mutate],
 	);
@@ -118,7 +118,7 @@ export const Editor = ({ initialData }: EditorProps) => {
 				mutate(values);
 				resetUnsavedChanges();
 			},
-			2500,
+			3500,
 		);
 
 		debouncedSave.cancel = newDebouncedSave.cancel;

@@ -33,6 +33,20 @@ import { useGetProjects } from "@/features/projects/api/use-get-projects";
 import { useRouter } from "next/navigation";
 import { v4 as uuidv4 } from 'uuid';
 
+type Project = {
+  id: string;
+  name: string;
+  width: number;
+  height: number;
+  updatedAt: string;
+  thumbnailUrl?: string;
+  templateThumbnailUrl?: string;
+};
+
+type ProjectsData = {
+  pages: Array<{ data: Project[] }>;
+};
+
 export const ProjectsSection = () => {
   const [ConfirmDialog, confirm] = useConfirm(
     "Are you sure?",
@@ -42,20 +56,6 @@ export const ProjectsSection = () => {
   const removeMutation = useDeleteProject();
   const router = useRouter();
 
-  const onCopy = (id: string) => {
-    // @ts-ignore
-    duplicateMutation.mutate({ id });
-  };
-
-  const onDelete = async (id: string) => {
-    const ok = await confirm();
-
-    if (ok) {
-      // @ts-ignore
-      removeMutation.mutate({ id });
-    }
-  };
-
   const {
     data,
     status,
@@ -64,7 +64,17 @@ export const ProjectsSection = () => {
     hasNextPage,
   } = useGetProjects();
 
-  // @ts-ignore
+  const onCopy = (project: Project) => {
+    duplicateMutation.mutate({ id: project.id, name: `Copy of ${project.name}` });
+  };
+
+  const onDelete = async (id: string) => {
+    const ok = await confirm();
+    if (ok) {
+      removeMutation.mutate({ id });
+    }
+  };
+
   if (status === "pending") {
     return (
       <div className="space-y-4">
@@ -94,11 +104,7 @@ export const ProjectsSection = () => {
     )
   }
 
-  if (
-    !data.pages.length ||
-    // @ts-ignore
-    !data.pages[0].data.length
-  ) {
+  if (!data || data.pages.length === 0 || data.pages[0].data.length === 0) {
     return (
       <div className="space-y-4">
         <h3 className="font-semibold text-lg">
@@ -120,93 +126,94 @@ export const ProjectsSection = () => {
       <h3 className="font-semibold text-lg">
         Recent projects
       </h3>
-      <Table>
-        <TableBody>
-          {data.pages.map((group, i) => (
-            <React.Fragment key={uuidv4()}>
-              {/* @ts-ignore */}
-              {group.data.map((project) => (
-
-                <TableRow key={uuidv4()}>
-                  <TableCell
-                    onClick={() => router.push(`/editor/${project.id}`)}
-                    className="font-medium flex items-center gap-x-2 cursor-pointer"
-                  >
-                    <div className="relative w-16 h-16 rounded-md overflow-hidden">
-  {project.thumbnailUrl ? (
-    <Image
-      src={project.thumbnailUrl}
-      alt={project.name}
-      width={64}
-      height={64}
-      className="object-cover"
-    />
-  ) : project.templateThumbnailUrl ? (
-    <Image
-      src={project.templateThumbnailUrl}
-      alt={project.name}
-      width={64}
-      height={64}
-      className="object-cover"
-    />
-  ) : (
-    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-      <FileIcon className="size-6 text-gray-400" />
-    </div>
-  )}
-</div>
-                    <div>
-                      <p>{project.name}</p>
-                      <p className="text-xs text-muted-foreground">
-                        {project.width} x {project.height} px
-                      </p>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        {data.pages.map((group) => (
+          <React.Fragment key={uuidv4()}>
+            {group.data.map((project: Project) => (
+              <div
+                key={project.id}
+                className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
+                onClick={() => router.push(`/editor/${project.id}`)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    router.push(`/editor/${project.id}`);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+              >
+                <div className="relative aspect-video">
+                  {project.thumbnailUrl ? (
+                    <Image
+                      src={project.thumbnailUrl}
+                      alt={project.name}
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                  ) : project.templateThumbnailUrl ? (
+                    <Image
+                      src={project.templateThumbnailUrl}
+                      alt={project.name}
+                      layout="fill"
+                      objectFit="cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                      <FileIcon className="h-12 w-12 text-gray-400" />
                     </div>
-                  </TableCell>
-                  <TableCell
-                    onClick={() => router.push(`/editor/${project.id}`)}
-                    className="hidden md:table-cell cursor-pointer"
-                  >
-                    {formatDistanceToNow(project.updatedAt, {
-                      addSuffix: true,
-                    })}
-                  </TableCell>
-                  <TableCell className="flex items-center justify-end">
-                    <DropdownMenu modal={false}>
-                      <DropdownMenuTrigger asChild>
-                        <Button
-                          disabled={false}
-                          size="icon"
-                          variant="ghost"
-                        >
-                          <MoreHorizontal className="size-4" />
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-60">
-                        <DropdownMenuItem
-                          className="h-10 cursor-pointer"
-                          disabled={duplicateMutation.isPending}
-                          onClick={() => onCopy(project.id)}
-                        >
-                          <CopyIcon className="size-4 mr-2" />
-                          Make a copy
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="h-10 cursor-pointer"
-                          disabled={removeMutation.isPending}
-                          onClick={() => onDelete(project.id)}
-                        >
-                          <Trash className="size-4 mr-2" />
-                          Delete
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </React.Fragment>
-          ))}
-        </TableBody>
-      </Table>
+                  )}
+                </div>
+                <div className="p-4">
+                  <h3 className="font-semibold text-lg mb-1">{project.name}</h3>
+                  <p className="text-sm text-gray-500 mb-2">
+                    {project.width} x {project.height} px
+                  </p>
+                  <p className="text-xs text-gray-400">
+                    {formatDistanceToNow(new Date(project.updatedAt), { addSuffix: true })}
+                  </p>
+                </div>
+                <div className="absolute top-2 right-2">
+                  <DropdownMenu modal={false}>
+                    <DropdownMenuTrigger asChild>
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="bg-white bg-opacity-50 hover:bg-opacity-100"
+                      >
+                        <MoreHorizontal className="size-4" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-60">
+                      <DropdownMenuItem
+                        className="h-10 cursor-pointer"
+                        disabled={duplicateMutation.isPending}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onCopy(project);
+                        }}
+                      >
+                        <CopyIcon className="size-4 mr-2" />
+                        Make a copy
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        className="h-10 cursor-pointer"
+                        disabled={removeMutation.isPending}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onDelete(project.id);
+                        }}
+                      >
+                        <Trash className="size-4 mr-2" />
+                        Delete
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              </div>
+            ))}
+          </React.Fragment>
+        ))}
+      </div>
       {hasNextPage && (
         <div className="w-full flex items-center justify-center pt-4">
           <Button

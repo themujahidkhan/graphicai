@@ -150,6 +150,7 @@ const app = new Hono()
 					json: true,
 					width: true,
 					height: true,
+					thumbnailUrl: true,
 				})
 				.partial(),
 		),
@@ -157,7 +158,7 @@ const app = new Hono()
 			try {
 				const auth = c.get("authUser");
 				const { id } = c.req.param();
-				const { name, json, height, width } = c.req.valid("json");
+				const { name, json, height, width, thumbnailUrl } = c.req.valid("json");
 
 				if (!auth.token?.id) {
 					return c.json({ error: "Unauthorized" }, 401);
@@ -170,6 +171,7 @@ const app = new Hono()
 						json: json ?? undefined,
 						width: width ?? undefined,
 						height: height ?? undefined,
+						thumbnailUrl: thumbnailUrl ?? undefined,
 						updatedAt: new Date(),
 					})
 					.where(and(eq(projects.id, id), eq(projects.userId, auth.token.id)))
