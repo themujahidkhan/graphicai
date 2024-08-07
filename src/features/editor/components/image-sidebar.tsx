@@ -1,13 +1,16 @@
 import { ActiveTool, Editor } from "@/features/editor/types";
 import { AlertTriangle, Loader, Upload } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ToolSidebarClose } from "@/features/editor/components/tool-sidebar-close";
 import { ToolSidebarHeader } from "@/features/editor/components/tool-sidebar-header";
 import { cn } from "@/lib/utils";
 import { useGetImages } from "@/features/images/api/use-get-images";
+import { useState } from "react";
 
 interface ImageSidebarProps {
 	editor: Editor | undefined;
@@ -20,10 +23,16 @@ export const ImageSidebar = ({
 	activeTool,
 	onChangeActiveTool,
 }: ImageSidebarProps) => {
-	const { data, isLoading, isError } = useGetImages();
+	const [searchTerm, setSearchTerm] = useState("");
+	const { data, isLoading, isError, refetch } = useGetImages(searchTerm);
 
 	const onClose = () => {
 		onChangeActiveTool("select");
+	};
+
+	const handleSearch = (e: React.FormEvent) => {
+		e.preventDefault();
+		refetch();
 	};
 
 	return (
@@ -37,6 +46,15 @@ export const ImageSidebar = ({
 				title="Images"
 				description="Add images to your canvas"
 			/>
+
+			<form onSubmit={handleSearch} className="p-4 flex gap-2">
+				<Input
+					placeholder="Search images..."
+					value={searchTerm}
+					onChange={(e) => setSearchTerm(e.target.value)}
+				/>
+				<Button type="submit">Search</Button>
+			</form>
 
 			{isLoading && (
 				<div className="flex items-center justify-center flex-1">
