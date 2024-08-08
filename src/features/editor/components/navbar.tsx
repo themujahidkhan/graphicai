@@ -35,7 +35,7 @@ import { cn } from "@/lib/utils";
 import { useFilePicker } from "use-file-picker";
 import { useMutationState } from "@tanstack/react-query";
 import { useUpdateProject } from "@/features/projects/api/use-update-project";
-import { useWindowEvents } from "@/features/editor/hooks/use-window-events";
+import { useWindowEvents } from "../hooks/use-window-events";
 
 interface NavbarProps {
 	id: string;
@@ -55,82 +55,67 @@ export const Navbar = ({
 }: NavbarProps) => {
 	const [projectName, setProjectName] = useState(initialProjectName);
 	const updateProjectMutation = useUpdateProject(id);
+
 	const { hasUnsavedChanges, resetUnsavedChanges } = useWindowEvents(editor);
-
-	const saveThumbnail = async () => {
-		if (editor) {
-			const thumbnailDataUrl = editor.getThumbnail();
-			console.log("Thumbnail Data URL:", thumbnailDataUrl);
-			if (thumbnailDataUrl) {
-				try {
-					// Convert data URL to Blob
-					const response = await fetch(thumbnailDataUrl);
-					const blob = await response.blob();
-
-					const formData = new FormData();
-					formData.append('thumbnail', blob, 'thumbnail.png');
-					formData.append('projectId', id);
-
-					const uploadResponse = await fetch('/api/projects/thumbnail', {
-						method: 'POST',
-						body: formData,
-					});
-					console.log("Thumbnail upload response:", uploadResponse);
-
-					if (!uploadResponse.ok) {
-						throw new Error('Failed to save thumbnail');
-					}
-
-					const { thumbnailUrl } = await uploadResponse.json();
-					console.log("Thumbnail URL:", thumbnailUrl);
-
-					// Update the project with the new thumbnail URL
-					await updateProjectMutation.mutateAsync({ thumbnailUrl });
-
-					console.log("Project updated with new thumbnail URL");
-				} catch (error) {
-					console.error('Error saving thumbnail:', error);
-				}
-			} else {
-				console.error('Thumbnail data URL is empty');
-			}
-		} else {
-			console.error('Editor is not available');
-		}
-	};
-
-
-
-	const dataURLtoFile = (dataurl: string, filename: string) => {
-		const arr = dataurl.split(',');
-		const mime = arr[0].match(/:(.*?);/)?.[1];
-		const bstr = atob(arr[1]);
-		let n = bstr.length;
-		const u8arr = new Uint8Array(n);
-		while (n--) {
-			u8arr[n] = bstr.charCodeAt(n);
-		}
-		return new File([u8arr], filename, { type: mime });
-	};
-
 
 	useEffect(() => {
 		const debounceTimer = setTimeout(async () => {
 			const newName = projectName?.trim() || "Untitled project";
-			if (newName !== initialProjectName || hasUnsavedChanges) {
-				try {
-					await updateProjectMutation.mutateAsync({ name: newName });
-					await saveThumbnail();
-					resetUnsavedChanges();
-				} catch (error) {
-					console.error("Failed to update project or save thumbnail:", error);
-					setProjectName(initialProjectName || "Untitled project");
+			if (newName !== initialProjectName) {
+				updateProjectMutation.mutate(
+					{ name: newName },
+					{
+						onError: (error) => {
+							console.error("Failed to update project name:", error);
+							setProjectName(initialProjectName || "Untitled project");
+						},
+					},
+				);
+			}
+
+			// Save thumbnail functionality
+			if (editor) {
+				const thumbnailDataUrl = editor.getThumbnail();
+				if (thumbnailDataUrl) {
+					try {
+						// Convert data URL to Blob
+						const response = await fetch(thumbnailDataUrl);
+						const blob = await response.blob();
+
+						const formData = new FormData();
+						formData.append('thumbnail', blob, 'thumbnail.png');
+						formData.append('projectId', id);
+
+						const uploadResponse = await fetch('/api/projects/thumbnail', {
+							method: 'POST',
+							body: formData,
+						});
+						console.log("Thumbnail upload response:", uploadResponse);
+
+						if (!uploadResponse.ok) {
+							throw new Error('Failed to save thumbnail');
+						}
+
+						const { thumbnailUrl } = await uploadResponse.json();
+						console.log("Thumbnail URL:", thumbnailUrl);
+
+						// Update the project with the new thumbnail URL
+						await updateProjectMutation.mutateAsync({ thumbnailUrl });
+
+						console.log("Project updated with new thumbnail URL");
+					} catch (error) {
+						console.error('Error saving thumbnail:', error);
+					}
+				} else {
+					console.error('Thumbnail data URL is empty');
 				}
+			} else {
+				console.error('Editor is not available');
 			}
 		}, 3000);
 
 		return () => clearTimeout(debounceTimer);
-	}, [projectName, updateProjectMutation, initialProjectName, editor, saveThumbnail, hasUnsavedChanges, resetUnsavedChanges]);
+	}, [projectName, updateProjectMutation, initialProjectName, editor]);
 
 	const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setProjectName(e.target.value);

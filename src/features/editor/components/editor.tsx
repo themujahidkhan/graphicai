@@ -41,18 +41,15 @@ interface EditorProps {
 }
 
 export const Editor = ({ initialData }: EditorProps) => {
-	// @ts-ignore
 	const { mutate } = useUpdateProject(initialData.id);
-	// @ts-ignore
 	const [projectName, setProjectName] = useState(initialData.name);
+
 	const [activeTool, setActiveTool] = useState<ActiveTool>("select");
 
 	// Windows Title
 	useEffect(() => {
-		// @ts-ignore
-		document.title = initialData.name;
-		// @ts-ignore
-	}, [initialData.name]);
+		document.title = projectName;
+	}, [projectName]);
 
 	const onClearSelection = useCallback(() => {
 		if (selectionDependentTools.includes(activeTool)) {
@@ -60,9 +57,11 @@ export const Editor = ({ initialData }: EditorProps) => {
 		}
 	}, [activeTool]);
 
-	// Define debouncedSave before using it
+	const handleProjectNameChange = useCallback((newName: string) => {
+		setProjectName(newName);
+		mutate({ name: newName });
+	}, [mutate]);
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
 	const debouncedSave = useCallback(
 		debounce(
 			(values: {
@@ -71,7 +70,6 @@ export const Editor = ({ initialData }: EditorProps) => {
 				width: number;
 				name?: string;
 			}) => {
-				// @ts-ignore
 				mutate(values);
 			},
 			3500,
@@ -79,52 +77,15 @@ export const Editor = ({ initialData }: EditorProps) => {
 		[mutate],
 	);
 
-	// @ts-ignore
 	const { init, editor } = useEditor({
-		// @ts-ignore
 		defaultState: initialData.json,
-		// @ts-ignore
 		defaultWidth: initialData.width,
-		// @ts-ignore
 		defaultHeight: initialData.height,
 		clearSelectionCallback: onClearSelection,
 		saveCallback: debouncedSave,
 	});
 
-	// Move useWindowEvents here, after editor is initialized
 	const { resetUnsavedChanges } = useWindowEvents(editor);
-
-	const handleProjectNameChange = useCallback((newName: string) => {
-		setProjectName(newName);
-		// @ts-ignore
-		debouncedSave({ ...initialData, name: newName });
-	}, [debouncedSave, initialData]);
-
-
-
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-	useEffect(() => {
-		debouncedSave.cancel();
-		debouncedSave.flush();
-
-		const newDebouncedSave = debounce(
-			(values: {
-				json: string;
-				height: number;
-				width: number;
-				name?: string;
-			}) => {
-				// @ts-ignore
-				mutate(values);
-				resetUnsavedChanges();
-			},
-			3500,
-		);
-
-		debouncedSave.cancel = newDebouncedSave.cancel;
-		debouncedSave.flush = newDebouncedSave.flush;
-	}, [mutate, resetUnsavedChanges]);
-
 
 	const onChangeActiveTool = useCallback(
 		(tool: ActiveTool) => {
@@ -169,19 +130,18 @@ export const Editor = ({ initialData }: EditorProps) => {
 	return (
 		<div className="h-full flex flex-col">
 			<Navbar
-				// @ts-ignore
 				id={initialData.id}
 				editor={editor}
 				activeTool={activeTool}
 				onChangeActiveTool={setActiveTool}
-				// @ts-ignore
-				initialProjectName={initialData.name}
+				initialProjectName={projectName}
 				onProjectNameChange={handleProjectNameChange}
 			/>
 			<div className="absolute h-[calc(100%-68px)] w-full top-[68px] flex">
 				<Sidebar
 					activeTool={activeTool}
 					onChangeActiveTool={onChangeActiveTool}
+
 				/>
 				<ElementsSidebar
 					editor={editor}

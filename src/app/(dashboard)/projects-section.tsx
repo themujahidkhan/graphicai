@@ -132,7 +132,7 @@ export const ProjectsSection = () => {
             {group.data.map((project: Project) => (
               <div
                 key={project.id}
-                className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer"
+                className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer relative"
                 onClick={() => router.push(`/editor/${project.id}`)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
@@ -142,7 +142,7 @@ export const ProjectsSection = () => {
                 role="button"
                 tabIndex={0}
               >
-                <div className="relative aspect-video">
+                <div className="relative aspect-video bg-gray-200">
                   {project.thumbnailUrl ? (
                     <Image
                       src={project.thumbnailUrl}
@@ -173,17 +173,18 @@ export const ProjectsSection = () => {
                   </p>
                 </div>
                 <div className="absolute top-2 right-2">
-                  <DropdownMenu modal={false}>
+                  <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
                         size="icon"
                         variant="ghost"
                         className="bg-white bg-opacity-50 hover:bg-opacity-100"
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <MoreHorizontal className="size-4" />
                       </Button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-60">
+                    <DropdownMenuContent align="end" side="bottom" className="w-60">
                       <DropdownMenuItem
                         className="h-10 cursor-pointer"
                         disabled={duplicateMutation.isPending}

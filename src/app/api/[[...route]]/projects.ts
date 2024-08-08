@@ -167,7 +167,7 @@ const app = new Hono()
 				const data = await db
 					.update(projects)
 					.set({
-						name: name?.trim() || "Untitled project",
+						name: name,
 						json: json ?? undefined,
 						width: width ?? undefined,
 						height: height ?? undefined,

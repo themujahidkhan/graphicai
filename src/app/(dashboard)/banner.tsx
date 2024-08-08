@@ -29,16 +29,12 @@ export const Banner = () => {
 	};
 
 	return (
-		<div className="text-black aspect-[5/1] min-h-[248px] flex gap-x-6 p-6 items-center rounded-xl bg-gradient-to-r from-[#e1ff00] to-[#fbfbfb]">
-			<div className="rounded-full size-28 items-center justify-center bg-white/50 hidden md:flex">
-				<div className="rounded-full size-20 flex items-center justify-center bg-white">
-					<Sparkles className="h-20 text-[#0073ff] fill-[#0073ff]" />
-				</div>
-			</div>
-			<div className="flex flex-col gap-y-2">
-				<h1 className="text-xl md:text-3xl font-semibold">
+		<div className="text-black aspect-[5/1] min-h-[248px] flex gap-x-6 p-6 items-center rounded-xl bg-yellow-300">
+
+			<div className="flex flex-col gap-y-2 items-center justify-center w-full text-center">
+				<h2 className="text-xl md:text-3xl font-semibold">
 					Visualize your ideas with Graphic AI
-				</h1>
+				</h2>
 				<p className="text-xs md:text-sm mb-2">
 					Build your online presence with AI Graphic Design
 				</p>
@@ -46,7 +42,7 @@ export const Banner = () => {
 					disabled={mutation.isPending}
 					onClick={onClick}
 					variant="secondary"
-					className="w-[160px]"
+					className="w-[160px] bg-black text-white hover:bg-white hover:text-black transition-all duration-700"
 				>
 					Start creating
 					<ArrowRight className="size-4 ml-2" />
