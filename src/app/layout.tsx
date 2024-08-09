@@ -13,7 +13,7 @@ import { auth } from "@/auth";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-	title: "GraphicAI.design",
+	title: "Home - GraphicAI",
 	description:
 		"Build a strong online presence by creating stunning graphics with AI",
 };

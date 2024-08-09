@@ -132,7 +132,7 @@ export const ProjectsSection = () => {
             {group.data.map((project: Project) => (
               <div
                 key={project.id}
-                className="bg-white rounded-lg shadow-md overflow-hidden cursor-pointer relative"
+                className="bg-white rounded shadow-lg hover:shadow shadow-black/10 overflow-hidden cursor-pointer relative"
                 onClick={() => router.push(`/editor/${project.id}`)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
@@ -142,13 +142,14 @@ export const ProjectsSection = () => {
                 role="button"
                 tabIndex={0}
               >
-                <div className="relative aspect-video bg-gray-200">
+                <div className="relative aspect-square bg-gray-100">
                   {project.thumbnailUrl ? (
                     <Image
                       src={project.thumbnailUrl}
                       alt={project.name}
                       layout="fill"
                       objectFit="cover"
+                      className="min-h-full p-0"
                     />
                   ) : project.templateThumbnailUrl ? (
                     <Image
@@ -197,14 +198,14 @@ export const ProjectsSection = () => {
                         Make a copy
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        className="h-10 cursor-pointer"
+                        className="h-10 cursor-pointer text-red-500 "
                         disabled={removeMutation.isPending}
                         onClick={(e) => {
                           e.stopPropagation();
                           onDelete(project.id);
                         }}
                       >
-                        <Trash className="size-4 mr-2" />
+                        <Trash className="size-4 mr-2 " />
                         Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>
