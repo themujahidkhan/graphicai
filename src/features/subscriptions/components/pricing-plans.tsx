@@ -4,7 +4,6 @@ import { Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useCheckout } from "@/features/subscriptions/api/use-checkout";
-import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
@@ -40,7 +39,7 @@ const plans = [
 		highlighted: true,
 		stripeLookupKey: {
 			monthly: process.env.STRIPE_MONTHLY_PRICE_ID,
-			annually: process.env.STRIPE_ANNUAL_PRICE_ID,
+			annually: process.env.STRIPE_YEARLY_PRICE_ID,
 		},
 	},
 	{
@@ -62,25 +61,7 @@ const plans = [
 
 export const PricingPlans = () => {
 	const [isAnnual, setIsAnnual] = useState(false);
-	const checkoutMutation = useMutation({
-		mutationFn: async ({ priceId }: { priceId: string }) => {
-			const response = await client.api.subscriptions.checkout.$post({
-				json: { priceId },
-			});
-
-			if (!response.ok) {
-				throw new Error("Failed to create session");
-			}
-
-			return await response.json();
-		},
-		onSuccess: ({ data }) => {
-			window.location.href = data;
-		},
-		onError: () => {
-			toast.error("Failed to create session");
-		},
-	});
+	const checkoutMutation = useCheckout();
 
 	const getPrice = (plan) => {
 		if (typeof plan.price === "object") {
@@ -100,9 +81,14 @@ export const PricingPlans = () => {
 	};
 
 	const handleUpgrade = (plan) => {
-		if (plan.stripeLookupKey) {
-			const priceId = isAnnual ? plan.stripeLookupKey.annually : plan.stripeLookupKey.monthly;
-			checkoutMutation.mutate({ priceId });
+		if (plan.priceId) {
+			const priceId = isAnnual ? plan.priceId.annually : plan.priceId.monthly;
+			if (priceId) {
+				checkoutMutation.mutate({ priceId });
+			} else {
+				console.error("Price ID is undefined");
+				toast.error("Unable to process upgrade. Please try again.");
+			}
 		}
 	};
 
