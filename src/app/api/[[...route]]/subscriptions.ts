@@ -66,35 +66,42 @@ const app = new Hono()
 		const body = await c.req.json();
 		const { priceId } = body;
 
+		console.log("Received priceId:", priceId); // Add this line
+
 		if (!priceId) {
 			return c.json({ error: "Price ID is required" }, 400);
 		}
 
-		const session = await stripe.checkout.sessions.create({
-			success_url: `${process.env.NEXT_PUBLIC_APP_URL}?success=1`,
-			cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}?canceled=1`,
-			payment_method_types: ["card", "paypal"],
-			mode: "subscription",
-			billing_address_collection: "auto",
-			customer_email: auth.token.email || "",
-			line_items: [
-				{
-					price: priceId,
-					quantity: 1,
+		try {
+			const session = await stripe.checkout.sessions.create({
+				success_url: `${process.env.NEXT_PUBLIC_APP_URL}?success=1`,
+				cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}?canceled=1`,
+				payment_method_types: ["card", "paypal"],
+				mode: "subscription",
+				billing_address_collection: "auto",
+				customer_email: auth.token.email || "",
+				line_items: [
+					{
+						price: priceId,
+						quantity: 1,
+					},
+				],
+				metadata: {
+					userId: auth.token.id,
 				},
-			],
-			metadata: {
-				userId: auth.token.id,
-			},
-		});
+			});
 
-		const url = session.url;
+			const url = session.url;
 
-		if (!url) {
-			return c.json({ error: "Failed to create session" }, 400);
+			if (!url) {
+				return c.json({ error: "Failed to create session" }, 400);
+			}
+
+			return c.json({ data: url });
+		} catch (error) {
+			console.error("Stripe error:", error); // Add this line
+			return c.json({ error: "Failed to create session" }, 500);
 		}
-
-		return c.json({ data: url });
 	})
 	.post("/webhook", async (c) => {
 		const body = await c.req.text();

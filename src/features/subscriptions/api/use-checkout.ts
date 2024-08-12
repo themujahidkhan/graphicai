@@ -1,17 +1,10 @@
-import { toast } from "sonner";
-import { useMutation } from "@tanstack/react-query";
-import { InferResponseType } from "hono";
-
-import { client } from "@/lib/hono";
-
-type ResponseType = InferResponseType<
-	(typeof client.api.subscriptions.checkout)["$post"],
-	200
->;
-
 export const useCheckout = () => {
 	const mutation = useMutation<ResponseType, Error, { priceId: string }>({
 		mutationFn: async ({ priceId }) => {
+			if (!priceId) {
+				throw new Error("Price ID is required");
+			}
+			console.log("Checkout priceId:", priceId); // Add this line
 			const response = await client.api.subscriptions.checkout.$post({
 				json: { priceId },
 			});
@@ -25,8 +18,9 @@ export const useCheckout = () => {
 		onSuccess: ({ data }) => {
 			window.location.href = data;
 		},
-		onError: () => {
-			toast.error("Failed to create session");
+		onError: (error) => {
+			console.error("Checkout error:", error);
+			toast.error("Failed to create session. Please try again.");
 		},
 	});
 
