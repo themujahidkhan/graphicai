@@ -63,6 +63,13 @@ const app = new Hono()
 			return c.json({ error: "Unauthorized" }, 401);
 		}
 
+		const body = await c.req.json();
+		const { priceId } = body;
+
+		if (!priceId) {
+			return c.json({ error: "Price ID is required" }, 400);
+		}
+
 		const session = await stripe.checkout.sessions.create({
 			success_url: `${process.env.NEXT_PUBLIC_APP_URL}?success=1`,
 			cancel_url: `${process.env.NEXT_PUBLIC_APP_URL}?canceled=1`,
@@ -72,7 +79,7 @@ const app = new Hono()
 			customer_email: auth.token.email || "",
 			line_items: [
 				{
-					price: process.env.STRIPE_PRICE_ID,
+					price: priceId,
 					quantity: 1,
 				},
 			],

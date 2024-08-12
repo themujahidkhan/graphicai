@@ -4,29 +4,31 @@ import { InferResponseType } from "hono";
 
 import { client } from "@/lib/hono";
 
-type ResponseType = InferResponseType<typeof client.api.subscriptions.checkout["$post"], 200>;
+type ResponseType = InferResponseType<
+	(typeof client.api.subscriptions.checkout)["$post"],
+	200
+>;
 
 export const useCheckout = () => {
-  const mutation = useMutation<
-    ResponseType,
-    Error
-  >({
-    mutationFn: async () => {
-      const response = await client.api.subscriptions.checkout.$post();
+	const mutation = useMutation<ResponseType, Error, { priceId: string }>({
+		mutationFn: async ({ priceId }) => {
+			const response = await client.api.subscriptions.checkout.$post({
+				json: { priceId },
+			});
 
-      if (!response.ok) {
-        throw new Error("Failed to create session");
-      }
+			if (!response.ok) {
+				throw new Error("Failed to create session");
+			}
 
-      return await response.json();
-    },
-    onSuccess: ({ data }) => {
-      window.location.href = data;
-    },
-    onError: () => {
-      toast.error("Failed to create session");
-    },
-  });
+			return await response.json();
+		},
+		onSuccess: ({ data }) => {
+			window.location.href = data;
+		},
+		onError: () => {
+			toast.error("Failed to create session");
+		},
+	});
 
-  return mutation;
+	return mutation;
 };
