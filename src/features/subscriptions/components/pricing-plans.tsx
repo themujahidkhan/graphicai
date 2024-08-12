@@ -4,6 +4,7 @@ import { Check, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { useCheckout } from "@/features/subscriptions/api/use-checkout";
+import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
 
@@ -61,7 +62,25 @@ const plans = [
 
 export const PricingPlans = () => {
 	const [isAnnual, setIsAnnual] = useState(false);
-	const checkoutMutation = useCheckout();
+	const checkoutMutation = useMutation({
+		mutationFn: async ({ priceId }: { priceId: string }) => {
+			const response = await client.api.subscriptions.checkout.$post({
+				json: { priceId },
+			});
+
+			if (!response.ok) {
+				throw new Error("Failed to create session");
+			}
+
+			return await response.json();
+		},
+		onSuccess: ({ data }) => {
+			window.location.href = data;
+		},
+		onError: () => {
+			toast.error("Failed to create session");
+		},
+	});
 
 	const getPrice = (plan) => {
 		if (typeof plan.price === "object") {
