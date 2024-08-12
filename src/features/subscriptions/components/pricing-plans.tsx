@@ -81,8 +81,8 @@ export const PricingPlans = () => {
 	};
 
 	const handleUpgrade = (plan) => {
-		if (plan.priceId) {
-			const priceId = isAnnual ? plan.priceId.annually : plan.priceId.monthly;
+		if (plan.stripeLookupKey) {
+			const priceId = isAnnual ? plan.stripeLookupKey.annually : plan.stripeLookupKey.monthly;
 			if (priceId) {
 				console.log("Initiating checkout with priceId:", priceId);
 				checkoutMutation.mutate({ priceId }, {
@@ -96,7 +96,7 @@ export const PricingPlans = () => {
 				toast.error("Unable to process upgrade. Please try again.");
 			}
 		} else {
-			console.error("No priceId found for plan:", plan.name);
+			console.error("No stripeLookupKey found for plan:", plan.name);
 			toast.error("Unable to process upgrade. Please try again.");
 		}
 	};
