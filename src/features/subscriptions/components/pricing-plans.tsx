@@ -3,6 +3,7 @@ import { Check, X } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
+import { toast } from "sonner";
 import { useCheckout } from "@/features/subscriptions/api/use-checkout";
 import { useState } from "react";
 import { v4 as uuidv4 } from "uuid";
