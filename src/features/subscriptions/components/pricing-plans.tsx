@@ -84,11 +84,20 @@ export const PricingPlans = () => {
 		if (plan.priceId) {
 			const priceId = isAnnual ? plan.priceId.annually : plan.priceId.monthly;
 			if (priceId) {
-				checkoutMutation.mutate({ priceId });
+				console.log("Initiating checkout with priceId:", priceId);
+				checkoutMutation.mutate({ priceId }, {
+					onError: (error) => {
+						console.error("Checkout error:", error);
+						toast.error("Failed to initiate checkout. Please try again.");
+					}
+				});
 			} else {
-				console.error("Price ID is undefined");
+				console.error("Price ID is undefined for plan:", plan.name);
 				toast.error("Unable to process upgrade. Please try again.");
 			}
+		} else {
+			console.error("No priceId found for plan:", plan.name);
+			toast.error("Unable to process upgrade. Please try again.");
 		}
 	};
 
