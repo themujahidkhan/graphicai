@@ -73,8 +73,8 @@ export const PricingPlans = () => {
 
 	const getSavings = (plan) => {
 		if (typeof plan.price === "object") {
-			const monthlyPrice = parseFloat(plan.price.monthly.replace("$", ""));
-			const annualPrice = parseFloat(plan.price.annually.replace("$", ""));
+			const monthlyPrice = Number.parseFloat(plan.price.monthly.replace("$", ""));
+			const annualPrice = Number.parseFloat(plan.price.annually.replace("$", ""));
 			const savings = monthlyPrice * 12 - annualPrice;
 			return savings.toFixed(2);
 		}
